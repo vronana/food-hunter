@@ -397,12 +397,15 @@ function row(it,o){
   el.append(p);
   return el;
 }
+const HOLDOPEN=new Set();
 function groupsHold(items,o){
   const frag=document.createDocumentFragment();
   [4,3,2,1,0,-1].forEach(y=>{
     const g=items.filter(i=>(i.r.y===undefined?-1:i.r.y)===y); if(!g.length) return;
-    const cap=h("div",{className:"cap"},h("b",{text:y<0?"5년 이상 · 분류 대기":y+"년차"}),h("span",{text:g.length+"곳"}));
-    const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o)));
+    const open=HOLDOPEN.has(y);
+    const cap=h("button",{className:"cap",type:"button","aria-expanded":String(open),style:"width:100%;background:none;border:0;cursor:pointer;text-align:left;font:inherit;color:inherit"},h("b",{text:(open?"▾ ":"▸ ")+(y<0?"5년 이상 · 분류 대기":y+"년차")}),h("span",{text:g.length+"곳"}));
+    const card=h("div",{className:"card"}); card.hidden=!open; if(open) g.forEach(i=>card.append(row(i,o)));
+    cap.addEventListener("click",()=>{ if(HOLDOPEN.has(y)) HOLDOPEN.delete(y); else HOLDOPEN.add(y); render(); });
     frag.append(cap,card);
   });
   return frag;
@@ -633,6 +636,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v3.7</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v3.8</p></div>
 </body>
 </html>
