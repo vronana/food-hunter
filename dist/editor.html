@@ -280,13 +280,15 @@ function h(tag, props, ...kids){
 const CHAINRE=/점\)?\s*$/, NOTCHAIN=/(본점|반점|전문점|상점)\)?\s*$/;
 function chain0(r){ return r.c!==undefined ? !!r.c : (CHAINRE.test(r.n) && !NOTCHAIN.test(r.n)); }
 /* 링크(STATIC): 즐겨찾기 = 주인이 정한 기본 + 내가 더한 것 - 내가 뺀 것 (내 폰에만 저장). 편집 페이지: 주인이 ★로 기본 즐겨찾기를 정함(DB). */
-function loadFavDelta(){ try{ const v=JSON.parse(localStorage.getItem("fh-fav2")||"{}"); return {add:Array.isArray(v.add)?v.add:[],rem:Array.isArray(v.rem)?v.rem:[]}; }catch(e){ return {add:[],rem:[]}; } }
+const REGION="suji"; /* 지역 구분. 수지는 예전 저장 이름을 그대로 써서 기존 ★이 유지됨 */
+const FAVKEY=REGION==="suji"?"fh-fav2":"fh-fav2-"+REGION;
+function loadFavDelta(){ try{ const v=JSON.parse(localStorage.getItem(FAVKEY)||"{}"); return {add:Array.isArray(v.add)?v.add:[],rem:Array.isArray(v.rem)?v.rem:[]}; }catch(e){ return {add:[],rem:[]}; } }
 const FD=loadFavDelta(), DEFAULT_FAV=new Set(STARS_BAKED);
 function isFav(id){ return (DEFAULT_FAV.has(id)||FD.add.includes(id)) && !FD.rem.includes(id); }
 function toggleFav(id){
   if(isFav(id)){ FD.add=FD.add.filter(x=>x!==id); if(DEFAULT_FAV.has(id) && !FD.rem.includes(id)) FD.rem.push(id); }
   else { FD.rem=FD.rem.filter(x=>x!==id); if(!DEFAULT_FAV.has(id) && !FD.add.includes(id)) FD.add.push(id); }
-  try{ localStorage.setItem("fh-fav2",JSON.stringify(FD)); }catch(e){}
+  try{ localStorage.setItem(FAVKEY,JSON.stringify(FD)); }catch(e){}
   render();
 }
 function autoCat(n){
@@ -713,6 +715,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.8</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.0</p></div>
 </body>
 </html>
