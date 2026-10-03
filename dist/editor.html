@@ -386,7 +386,7 @@ function row(it,o){
   if(SHOW_G && r.g) nm.append(h("span",{className:"badge",text:"모범"}));
   if(it.c) nm.append(h("span",{className:"badge chain",text:"체인"}));
   if(!STATIC && it.h && it.star) nm.append(h("span",{className:"badge link",text:"링크 노출"}));
-  if(o.tag){ const tg=h("span",{className:"tag",text:(STATIC&&it.s==="기타")?"기타":label(it.s)}); paint(tg,it.s); nm.append(tg); }
+  if(o.tag){ const held=!STATIC&&it.h; const tg=h("span",{className:"tag",text:held?"보류함":((STATIC&&it.s==="기타")?"기타":label(it.s))}); paint(tg,held?"hold":it.s); nm.append(tg); }
   const info=h("div",{className:"info"},nm,h("div",{className:"meta",text:r.a}));
   if(r.d) info.append(h("div",{className:"meta",text:Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가"}));
   else if(!STATIC) info.append(h("div",{className:"meta",text:"직접 추가한 가게"}));
@@ -415,7 +415,7 @@ function row(it,o){
     if(!it.h && it.s==="기타") sel.value=""; else if(it.s!=="기타") sel.value=it.s; else sel.value="";
     sel.disabled=lock; paint(sel,it.s);
     sel.addEventListener("change",()=>{ if(!sel.value) return; setCat(r.id,{s:sel.value,star:it.star,x:false,h:false},it.h?"unhold":"move"); });
-    const hb=h("button",{className:"pbtn",type:"button",text:it.h?"보류 풀기":"보류"}); hb.disabled=lock;
+    const hb=h("button",{className:"pbtn",type:"button",text:it.h?(it.s==="기타"?"분류 없이 올리기":"‘"+label(it.s)+"’"+(/류$/.test(label(it.s))?"로":"으로")+" 올리기"):"보류함으로"}); hb.disabled=lock;
     hb.addEventListener("click",()=>setCat(r.id,{s:it.s,star:it.star,x:false,h:!it.h},it.h?"restore":"hold"));
     const delBtn=h("button",{className:"pbtn del",type:"button","aria-label":r.n+" 삭제",text:"삭제"}); delBtn.disabled=lock;
     let armed=false, armTimer=null;
@@ -724,6 +724,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.7</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.8</p></div>
 </body>
 </html>
