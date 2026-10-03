@@ -251,6 +251,7 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
       </div>
       <input id="aa" type="text" maxlength="120" placeholder="주소 (선택) 예: 포은대로 536" aria-label="주소">
       <label class="chk"><input id="ag" type="checkbox"> 모범음식점이에요</label>
+      <label class="chk"><input id="astar" type="checkbox"> ★ 즐겨찾기로 추가</label>
       <div class="two"><button type="submit" class="pbtn main">추가</button><button type="button" class="pbtn" id="acancel">닫기</button></div>
     </form>
     <div id="listbody"></div>
@@ -699,9 +700,9 @@ $("addform").addEventListener("submit",e=>{
   const id="m-"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
   const nr={id,n,a,dg,m:0,d:"",s:sc,g:g?1:0,f:"",manual:1};
   DATA.push(nr); byId.set(id,nr);
-  const next={s:sc,star:false,x:false,h:sc==="기타",c:chain0(nr)};
+  const next={s:sc,star:$("astar").checked,x:false,h:sc==="기타",c:chain0(nr)};
   ov.set(id,next);
-  $("an").value=""; $("aa").value=""; $("ag").checked=false;
+  $("an").value=""; $("aa").value=""; $("ag").checked=false; $("astar").checked=false;
   render();
   const where=sc==="기타"?(auto?"자동 분류가 안 돼서 보류함에":"보류함에"):(auto?label(sc)+"(으)로 자동 분류해서":label(sc)+"에");
   showToast("‘"+n+"’을(를) "+where+" 추가했어요", ()=>commit(id,Object.assign({},next,{x:true}),next));
@@ -735,6 +736,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.4</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.5</p></div>
 </body>
 </html>
