@@ -81,6 +81,8 @@ h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:ba
 .cm{font-size:.95rem;color:var(--muted)}
 .sc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
 .trashlink{margin-top:26px;width:100%}
+.yrcard{width:100%;margin-top:12px}
+.yrcard+.card{margin-top:8px}
 .sc .ic{grid-row:1/3}
 .sc .scl{font-size:1.05rem;align-self:end}
 .sc .scn{align-self:start;color:var(--muted);font-size:.95rem}
@@ -403,10 +405,10 @@ function groupsHold(items,o){
   [4,3,2,1,0,-1].forEach(y=>{
     const g=items.filter(i=>(i.r.y===undefined?-1:i.r.y)===y); if(!g.length) return;
     const open=HOLDOPEN.has(y);
-    const cap=h("button",{className:"cap",type:"button","aria-expanded":String(open),style:"width:100%;background:none;border:0;cursor:pointer;text-align:left;font:inherit;color:inherit"},h("b",{text:(open?"▾ ":"▸ ")+(y<0?"5년 이상 · 분류 대기":y+"년차")}),h("span",{text:g.length+"곳"}));
-    const card=h("div",{className:"card"}); card.hidden=!open; if(open) g.forEach(i=>card.append(row(i,o)));
+    const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon("hold",30),h("span",{className:"scl",text:y<0?"5년 이상 · 분류 대기":y+"년차"}),h("span",{className:"scn",text:g.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
     cap.addEventListener("click",()=>{ if(HOLDOPEN.has(y)) HOLDOPEN.delete(y); else HOLDOPEN.add(y); render(); });
-    frag.append(cap,card);
+    frag.append(cap);
+    if(open){ const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o))); frag.append(card); }
   });
   return frag;
 }
@@ -636,6 +638,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v3.8</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v3.9</p></div>
 </body>
 </html>
