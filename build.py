@@ -13,8 +13,12 @@ extra=[dict(id=k,n=e['n'],a=e.get('a',''),dg=e['dg'],m=0,d='',s=e.get('s','기�
 for r in rows+extra:
     e=ed.get(r['id'],{}); h=e['h'] if 'h' in e else (e.get('s',r['s'])=='기타' or r.get('y',9)<5)
     if e.get('x'): continue
-    if h: continue
+    hs=False
+    if h:
+        if e.get('star') and not e.get('x'): hs=True
+        else: continue
     r=dict(r); r['s']=e.get('s',r['s'])
+    if hs: r['hs']=1
     if 'c' in e: r['c']=bool(e['c'])
     view.append(r)
     if e.get('star'): stars.append(r['id'])
