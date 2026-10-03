@@ -502,11 +502,11 @@ function pickFrom(pool){
   if(quick||pool.length<2){ reveal(); return; }
   let delay=50, elapsed=0, prev=null;
   const step=()=>{
-    if(elapsed>=1900){ reveal(); return; }
+    if(delay>=620){ reveal(); return; }
     let it=pool[Math.floor(Math.random()*pool.length)];
     if(it.r.id===prev) it=pool[(pool.indexOf(it)+1)%pool.length];
     prev=it.r.id; showItem(it,"tick");
-    elapsed+=delay; delay=Math.round(delay*1.13);
+    elapsed+=delay; delay=Math.round(delay*1.17);
     pickTimer=setTimeout(step,delay);
   };
   step();
@@ -562,6 +562,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.3</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.4</p></div>
 </body>
 </html>
