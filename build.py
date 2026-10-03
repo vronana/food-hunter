@@ -25,6 +25,14 @@ HEAD='''<meta name="theme-color" content="#f7f5f2">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="오늘 뭐먹지">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="오늘 뭐먹지">
+<meta property="og:title" content="오늘 뭐먹지">
+<meta property="og:description" content="수지구 가족 외식 맛집 목록. 뽑기로 오늘 메뉴를 정해 보세요.">
+<meta property="og:url" content="https://vronana.github.io/food-hunter/">
+<meta property="og:image" content="https://vronana.github.io/food-hunter/icons/icon-512.png">
+<meta property="og:locale" content="ko_KR">
+<meta name="description" content="수지구 가족 외식 맛집 목록. 뽑기로 오늘 메뉴를 정해 보세요.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
