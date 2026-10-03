@@ -42,7 +42,8 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
 .lhead{display:flex;align-items:center;gap:12px}
 
 .top.slim{min-height:0;padding-block:0;height:0;overflow:visible}
-.hero{padding-block:18px 4px}
+.hero{padding-block:18px 4px;position:relative}
+.region{position:absolute;right:2px;top:20px;font-size:.92rem;color:var(--muted);background:var(--fill);padding:5px 12px;border-radius:999px}
 .top.slim + * .hero, .top.slim ~ * .hero{padding-block:max(18px,env(safe-area-inset-top,0px)) 4px}
 .eyebrow{margin:0 0 8px;color:var(--muted);font-size:1rem}
 h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:balance}
@@ -201,6 +202,7 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
 
   <section id="home">
     <div class="hero">
+      <span class="region">수지구</span>
       <p class="eyebrow" id="eyebrow"></p>
       <h1>오늘 <span class="mark">뭐먹지?</span></h1>
       <p class="sub" id="sub"></p>
@@ -464,7 +466,7 @@ function groups(items,o){
 /* ---------- screens ---------- */
 function renderHome(all){
   const vis=all.filter(i=>!i.x && !i.h);
-  $("sub").textContent="수지구";
+  $("sub").textContent="고민하는 당신에게";
   const body=$("homebody"); const frag=document.createDocumentFragment();
   const norm=x=>String(x||"").toLowerCase().replace(/\s+/g,"");
   const toks=S.q.toLowerCase().split(/\s+/).filter(Boolean);
