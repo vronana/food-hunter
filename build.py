@@ -37,7 +37,7 @@ HEAD='''<meta name="theme-color" content="#f7f5f2">
 <link rel="icon" type="image/png" href="icons/icon-192.png?v=22">
 <link rel="apple-touch-icon" href="icons/icon-180.png?v=22">
 '''
-idx=make(view,'true',stars).replace('<meta name="color-scheme" content="light">\n','<meta name="color-scheme" content="light">\n'+HEAD,1)
+idx=make(view,'true',stars).replace('<meta name="color-scheme" content="only light">\n','<meta name="color-scheme" content="only light">\n'+HEAD,1)
 open(f'{here}/index.html','w').write(idx)
 os.makedirs(f'{here}/dist',exist_ok=True)
 open(f'{here}/dist/editor.html','w').write(make(rows,'false',[]))
