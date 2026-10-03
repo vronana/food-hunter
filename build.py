@@ -12,7 +12,9 @@ view=[];stars=[]
 for r in rows:
     e=ed.get(r['id'],{}); h=e['h'] if 'h' in e else r['s']=='기타'
     if e.get('x') or h: continue
-    r=dict(r); r['s']=e.get('s',r['s']); view.append(r)
+    r=dict(r); r['s']=e.get('s',r['s'])
+    if 'c' in e: r['c']=bool(e['c'])
+    view.append(r)
     if e.get('star'): stars.append(r['id'])
 j=lambda o:json.dumps(o,ensure_ascii=False)
 def make(data,static,st): return src.replace('__DATA__',j(data)).replace('__STATIC__',static).replace('__STARS__',j(st))
