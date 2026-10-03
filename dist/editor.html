@@ -125,6 +125,7 @@ button.pill[aria-pressed="true"]{background:var(--accent-soft);color:var(--accen
 .backup:hover{background:var(--fill);color:var(--ink)}
 .badge.chain{color:#4a63c9;background:#e8edff}
 .pickbtn{margin-top:16px;width:100%;border:0;border-radius:16px;background:var(--accent);color:var(--accent-fg);font-size:1.15rem;padding:15px 18px;cursor:pointer;box-shadow:0 6px 18px rgba(217,98,43,.22)}
+.listpick{margin-top:6px;margin-bottom:4px}
 .pickbtn:active{transform:scale(.98)}
 .pickov{position:fixed;inset:0;z-index:40;background:rgba(43,38,34,.35);display:flex;align-items:flex-end;justify-content:center}
 .picksheet{width:100%;max-width:560px;background:var(--paper);border-radius:26px 26px 0 0;padding:26px 22px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(43,38,34,.18)}
@@ -189,10 +190,10 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
       </select></span>
       <button type="button" class="pill" id="gbtn" aria-pressed="false">모범만</button>
       <button type="button" class="pill" id="cbtn" aria-pressed="false">체인만</button>
-      <button type="button" class="pill" id="pickbtn2">🎲 여기서 뽑기</button>
     </div>
     <p class="banner" id="banner" hidden></p>
     <p class="notice" id="notice" hidden></p>
+    <button type="button" class="pickbtn listpick" id="pickbtn2"></button>
     <div id="listbody"></div>
   </section>
 </div>
@@ -425,7 +426,7 @@ function renderList(all){
   $("ls").textContent=shown.length+"곳"+(mixed?(" · "+MIXED[key][1]):(c&&c.g?" · "+c.g:""));
   $("gbtn").hidden=(key==="g"||key==="trash");
   $("gbtn").setAttribute("aria-pressed",String(S.onlyG));
-  $("cbtn").hidden=(key==="chain"||key==="trash"); $("pickbtn2").hidden=(key==="hold"||key==="trash"); $("cbtn").setAttribute("aria-pressed",String(S.onlyC));
+  $("cbtn").hidden=(key==="chain"||key==="trash"); $("pickbtn2").hidden=(key==="hold"||key==="trash"); $("pickbtn2").textContent="🎲 "+title+"에서 뽑기"; $("cbtn").setAttribute("aria-pressed",String(S.onlyC));
   $("banner").hidden=true;
   const nt=$("notice"); nt.textContent=readOnly?(readOnlyWhy||(STATIC?"":"보기 전용이에요.")):""; nt.hidden=!(readOnly && nt.textContent);
   const frag=document.createDocumentFragment();
@@ -562,6 +563,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.4</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.5</p></div>
 </body>
 </html>
