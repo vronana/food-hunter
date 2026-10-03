@@ -435,11 +435,22 @@ function groupsHold(items,o){
   });
   return frag;
 }
+const FOLDOPEN=new Set();
+function foldCard(id,iconKey,label,items,o){
+  const frag=document.createDocumentFragment();
+  const open=FOLDOPEN.has(id);
+  const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon(iconKey,30),h("span",{className:"scl",text:label}),h("span",{className:"scn",text:items.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
+  cap.addEventListener("click",()=>{ if(FOLDOPEN.has(id)) FOLDOPEN.delete(id); else FOLDOPEN.add(id); render(); });
+  frag.append(cap);
+  if(open){ const card=h("div",{className:"card"}); items.forEach(i=>card.append(row(i,o))); frag.append(card); }
+  return frag;
+}
 function groups(items,o){
   const frag=document.createDocumentFragment();
   const dgs=[...DONGS, ...new Set(items.map(i=>i.r.dg).filter(d=>!DONGS.includes(d)))];
   dgs.forEach(d=>{
     const g=items.filter(i=>i.r.dg===d); if(!g.length) return;
+    if(o.fold){ frag.append(foldCard((S.key||"")+"|"+d,o.icon||"hold",d,g,o)); return; }
     const cap=h("div",{className:"cap"},h("b",{text:d}),h("span",{text:g.length+"곳"}));
     const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o)));
     frag.append(cap,card);
@@ -522,11 +533,18 @@ function renderList(all){
   if(!shown.length) frag.append(h("p",{className:"empty",text:key==="trash"?"삭제한 가게가 없어요.":key==="hold"?"보류한 가게가 없어요.":key==="fav"?"별표를 누른 가게가 아직 없어요.":"조건에 맞는 가게가 없어요."}));
   else {
     const favs=(key==="fav"||key==="trash"||key==="hold")?[]:shown.filter(i=>i.star);
+    const rest=shown.filter(i=>!favs.includes(i));
+    const ngroups=(favs.length?1:0)+new Set(rest.map(i=>i.r.dg)).size;
+    const fold=ngroups>1 && key!=="hold";
+    const icn=ICONS[key]?key:"hold";
     if(favs.length){
-      frag.append(h("div",{className:"cap"},h("b",{text:"★ 즐겨찾기"}),h("span",{text:favs.length+"곳"})));
-      const fc=h("div",{className:"card"}); favs.forEach(i=>fc.append(row(i,{tag:mixed}))); frag.append(fc);
+      if(fold) frag.append(foldCard(key+"|fav","fav","★ 즐겨찾기",favs,{tag:mixed}));
+      else {
+        frag.append(h("div",{className:"cap"},h("b",{text:"★ 즐겨찾기"}),h("span",{text:favs.length+"곳"})));
+        const fc=h("div",{className:"card"}); favs.forEach(i=>fc.append(row(i,{tag:mixed}))); frag.append(fc);
+      }
     }
-    frag.append((key==="hold"?groupsHold:groups)(shown.filter(i=>!favs.includes(i)),{tag:mixed}));
+    frag.append((key==="hold"?groupsHold:groups)(rest,{tag:mixed,fold,icon:icn}));
   }
   if(key==="hold"){
     const tn=all.filter(i=>i.x).length;
@@ -551,7 +569,7 @@ function render(){
   if(window.scrollY!==y) window.scrollTo(0,y);
 }
 function go(view,key){
-  S.view=view; S.key=key||null; S.dong="all"; S.kind="all"; S.open=null;
+  S.view=view; S.key=key||null; S.dong="all"; S.kind="all"; S.open=null; FOLDOPEN.clear();
   $("home").hidden=view!=="home"; $("listview").hidden=view!=="list";
   render(); window.scrollTo(0,0);
 }
@@ -693,6 +711,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.6</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.7</p></div>
 </body>
 </html>
