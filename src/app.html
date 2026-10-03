@@ -464,7 +464,7 @@ function groups(items,o){
 /* ---------- screens ---------- */
 function renderHome(all){
   const vis=all.filter(i=>!i.x && !i.h);
-  $("sub").textContent="영업 5년 이상 · 50㎡ 이상 · "+vis.length+"곳";
+  $("sub").textContent="수지구";
   const body=$("homebody"); const frag=document.createDocumentFragment();
   const norm=x=>String(x||"").toLowerCase().replace(/\s+/g,"");
   const toks=S.q.toLowerCase().split(/\s+/).filter(Boolean);
