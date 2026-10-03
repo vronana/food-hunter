@@ -401,7 +401,6 @@ function row(it,o){
   const nm=h("div",{className:"nm"}); nm.append(r.n);
   if(SHOW_G && r.g) nm.append(h("span",{className:"badge",text:"모범"}));
   if(it.c) nm.append(h("span",{className:"badge chain",text:"체인"}));
-  if(!STATIC && it.h && it.star) nm.append(h("span",{className:"badge link",text:"링크 노출"}));
   if(o.tag){ const held=!STATIC&&it.h; const tg=h("span",{className:"tag",text:held?"보류함":((STATIC&&it.s==="기타")?"기타":label(it.s))}); paint(tg,held?"hold":it.s); nm.append(tg); }
   const info=h("div",{className:"info"},nm,h("div",{className:"meta",text:r.a}));
   if(r.d) info.append(h("div",{className:"meta",text:Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가"}));
@@ -445,7 +444,7 @@ function row(it,o){
     });
     const cb=h("button",{className:"pbtn",type:"button",text:it.c?"체인 해제":"체인 표시"}); cb.disabled=lock;
     cb.addEventListener("click",()=>setCat(r.id,{c:!it.c},"chain"));
-    p.append(h("span",{className:"selw"},sel),hb,cb,delBtn);
+    p.append(h("span",{className:"selw"},sel)); if(!(it.h && it.s==="기타")) p.append(hb); p.append(cb,delBtn);
   }
   el.append(p);
   return el;
@@ -740,6 +739,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.8</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.9</p></div>
 </body>
 </html>
