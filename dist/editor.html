@@ -60,13 +60,16 @@ h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:ba
 .lab{margin:34px 0 12px;padding-inline:4px;font-size:.95rem;color:var(--muted)}
 .lab:empty{display:none}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.cc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:20px 18px 18px;cursor:pointer;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+.cc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 14px;cursor:pointer;display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center;transition:transform .15s}
 .cc:hover{transform:translateY(-2px)}
 .cc:active{transform:scale(.98)}
-.cc .ic{margin-bottom:10px}
-.cn{font-size:1.4rem;line-height:1.25}
+.cc .ic{grid-row:1/3}
+.cc .cn{align-self:end}
+.cc .cm{align-self:start}
+.cn{font-size:1.3rem;line-height:1.25;white-space:nowrap}
+@media(max-width:360px){.sc{padding:12px 10px;column-gap:6px}.sc .scl{font-size:1rem}.cc{padding:12px 10px;column-gap:6px}.cn{font-size:1.15rem}.sc .scl{font-size:1rem}}
 .cm{font-size:.95rem;color:var(--muted)}
-.sc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
+.sc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:center;min-width:0}
 .trashlink{margin-top:26px;width:100%}
 .addbtn{width:100%;margin-top:14px;border:2px dashed #e3cdb4;background:transparent;color:var(--accent);border-radius:16px;padding:13px;font:inherit;font-size:1.02rem;cursor:pointer}
 .addform{margin-top:12px;background:var(--paper);border-radius:20px;box-shadow:var(--shadow);padding:14px;display:grid;gap:10px}
@@ -81,7 +84,7 @@ h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:ba
 .yrcard{width:100%;margin-top:12px}
 .yrcard+.card{margin-top:8px}
 .sc .ic{grid-row:1/3}
-.sc .scl{font-size:1.05rem;align-self:end}
+.sc .scl{font-size:1.15rem;align-self:end;white-space:nowrap}
 .sc .scn{align-self:start;color:var(--muted);font-size:.95rem}
 .todo{margin-top:30px;border-radius:20px;background:var(--paper);box-shadow:var(--shadow);padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .todo p{margin:0;font-size:1.1rem}
@@ -486,19 +489,19 @@ function renderHome(all){
   }
   const count=k=>vis.filter(i=>i.s===k).length;
   const card=k=>{
-    const b=h("button",{className:"cc",type:"button"},icon(k,48),h("span",{className:"cn",text:label(k)}),h("span",{className:"cm",text:count(k)+"곳"}));
+    const b=h("button",{className:"cc",type:"button"},icon(k,60),h("span",{className:"cn",text:label(k)}),h("span",{className:"cm",text:count(k)+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); return b;
   };
   frag.append(h("p",{className:"lab",text:"한식"}));
   const g1=h("div",{className:"grid"}); ["육류","탕류","밥류","면류"].forEach(k=>g1.append(card(k))); frag.append(g1);
-  frag.append(h("p",{className:"lab",text:"다른 음식"}));
+  frag.append(h("p",{className:"lab",text:"이외"}));
   const g2=h("div",{className:"grid"}); ["중식","일식","양식","세계음식"].forEach(k=>g2.append(card(k))); frag.append(g2);
   frag.append(h("p",{className:"lab",text:"바로가기"}));
   const g3=h("div",{className:"grid"});
   
   const holdN=all.filter(i=>!i.x && i.h).length;
   [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",all.filter(i=>!i.x && i.star).length],["chain","체인점",vis.filter(i=>i.c).length],["hold","보류함",holdN]].filter(x=>(SHOW_G||x[0]!=="g") && (x[0]!=="fav"||x[2]>0) && (!STATIC||x[0]!=="hold")).forEach(([k,t2,n])=>{
-    const b=h("button",{className:"sc",type:"button"},icon(k,34),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
+    const b=h("button",{className:"sc",type:"button"},icon(k,44),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
   });
   frag.append(g3);
@@ -723,6 +726,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v5.10</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v6.0</p></div>
 </body>
 </html>
