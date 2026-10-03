@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>수지구 가족 외식 목록</title>
+<title>오늘 뭐먹지</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -143,10 +143,9 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
   <section id="home">
     <div class="hero">
       <p class="eyebrow" id="eyebrow"></p>
-      <h1>오늘은 <span class="mark">뭐 먹을까요?</span></h1>
+      <h1>오늘 <span class="mark">뭐먹지?</span></h1>
       <p class="sub" id="sub"></p>
     </div>
-    <div class="search"><input id="q" type="search" placeholder="가게 이름, 동네, 메뉴로 찾기" autocomplete="off"></div>
     <div id="homebody"></div>
   </section>
 
@@ -417,7 +416,7 @@ $("undo").addEventListener("click",()=>{ const f=undoFn; $("toast").hidden=true;
 $("trashic").innerHTML=TRASH_SVG;
 $("trashbtn").addEventListener("click",()=>go("list","trash"));
 $("back").addEventListener("click",()=>{ if(S.view==="list" && S.key==="trash") go("list","hold"); else go("home"); });
-$("q").addEventListener("input",e=>{ S.q=e.target.value; render(); });
+
 $("dongsel").addEventListener("change",e=>{ S.dong=e.target.value; render(); });
 $("sortsel").addEventListener("change",e=>{ S.sort=e.target.value; render(); });
 $("gbtn").addEventListener("click",()=>{ S.onlyG=!S.onlyG; render(); });
