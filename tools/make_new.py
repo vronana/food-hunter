@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """개업 5년 미만(0~4년차) 가게를 원본 CSV에서 뽑아 data/rows_new.json 으로 저장 (전부 보류함 대상)
-사용: python3 tools/make_new.py 인허가.csv 모범.csv
+사용: python3 tools/make_new.py 인허가.csv 모범.csv [small]  (small: 50㎡ 미만 가게 -> data/rows_small.json)
 """
 import sys,re,json,os
 import pandas as pd
@@ -34,13 +34,13 @@ def to_s(big,sub):
     return {"고기·구이":"육류","탕류":"탕류","찌개·백반":"밥류","면류":"면류"}.get(sub,"기타")
 
 def norm(s): return re.sub(r'[\s\(\)\[\]·\-\.,]','',str(s))
-def main(lic,mob,out,exclude_ids):
+def main(lic,mob,out,exclude_ids,small=False):
     df=pd.read_csv(lic,encoding='cp949',low_memory=False)
     d=df[df['영업상태명'].astype(str).str.contains('영업')].copy()
-    d['m']=pd.to_numeric(d['소재지면적'],errors='coerce'); d=d[d['m']>=50]
+    d['m']=pd.to_numeric(d['소재지면적'],errors='coerce'); d=d[(d['m']<50) if small else (d['m']>=50)]
     d=d[d['도로명주소'].astype(str).str.contains('수지구')]
     d['dt']=pd.to_datetime(d['인허가일자'].astype(str),errors='coerce')
-    d=d[d['dt']>pd.Timestamp('2021-10-03')]          # 5년 미만
+    if not small: d=d[d['dt']>pd.Timestamp('2021-10-03')]          # 5년 미만
     d=d[d['업태구분명'].isin(ALLOW)]
     d['n']=d['사업장명'].astype(str)
     d=d[~d['n'].apply(lambda s:bool(BAR.search(s)))]
@@ -59,12 +59,16 @@ def main(lic,mob,out,exclude_ids):
         k=(norm(x['n']),norm(road.split('(')[0]))
         g=1 if k in mmap else 0
         yrs=int((NOW-x['dt']).days//365.25)
-        rows.append(dict(id=x['관리번호'],n=x['n'],a=a,dg=mj.group(1),m=round(float(x['m']),1),d=x['dt'].strftime('%Y-%m'),s=to_s(big,sub),g=g,f=(mmap[k] if g else ''),y=max(0,min(4,yrs))))
+        row=dict(id=x['관리번호'],n=x['n'],a=a,dg=mj.group(1),m=round(float(x['m']),1),d=(x['dt'].strftime('%Y-%m') if pd.notna(x['dt']) else ''),s=to_s(big,sub),g=g,f=(mmap[k] if g else ''))
+        if small: row['sm']=1
+        else: row['y']=max(0,min(4,yrs))
+        rows.append(row)
     json.dump(rows,open(out,'w'),ensure_ascii=False)
     return rows
 if __name__=='__main__':
     here=os.path.dirname(os.path.abspath(__file__))+'/..'
     old={r['id'] for r in json.load(open(here+'/data/rows.json'))}
-    rows=main(sys.argv[1],sys.argv[2],here+'/data/rows_new.json',old)
+    small=len(sys.argv)>3 and sys.argv[3]=='small'
+    rows=main(sys.argv[1],sys.argv[2],here+('/data/rows_small.json' if small else '/data/rows_new.json'),old,small)
     import collections
-    print(len(rows),sorted(collections.Counter(r['y'] for r in rows).items()),collections.Counter(r['s'] for r in rows),sum(r['g'] for r in rows),collections.Counter(r['dg'] for r in rows))
+    print(len(rows),sorted(collections.Counter(r.get('y',-1) for r in rows).items()),collections.Counter(r['s'] for r in rows),sum(r['g'] for r in rows),collections.Counter(r['dg'] for r in rows))

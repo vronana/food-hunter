@@ -312,7 +312,7 @@ function autoCat(n){
   if(t(/밥|솥|찌개|백반|정식|한정식|쌈밥|보리|집밥|청국장|순두부|곤드레|김밥|떡볶이|분식|만두|죽$|찜|낙지|쭈꾸미|아구|코다리|해물|장어|꼼장어|낙곱새/)) return "밥류";
   return null;
 }
-function hold0(r,s){ return s==="기타" || (r.y!==undefined && r.y<5); }
+function hold0(r,s){ return s==="기타" || !!r.sm || (r.y!==undefined && r.y<5); }
 function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:(STATIC?isFav(r.id):!!(o&&o.star)), x:!!(o&&o.x), h:r.hs?true:((o&&o.h!==undefined)?!!o.h:hold0(r,s)), c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
 function label(k){ const c=CATS.find(x=>x.k===k); return c&&c.label?c.label:k; }
 function mapUrl(r){ return "https://map.naver.com/p/search/"+encodeURIComponent("수지구 "+r.n); }
@@ -437,10 +437,10 @@ function row(it,o){
 const HOLDOPEN=new Set();
 function groupsHold(items,o){
   const frag=document.createDocumentFragment();
-  [4,3,2,1,0,-1].forEach(y=>{
-    const g=items.filter(i=>(i.r.y===undefined?-1:i.r.y)===y); if(!g.length) return;
+  [4,3,2,1,0,-1,-2].forEach(y=>{
+    const g=items.filter(i=>(i.r.sm?-2:(i.r.y===undefined?-1:i.r.y))===y); if(!g.length) return;
     const open=HOLDOPEN.has(y);
-    const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon("hold",30),h("span",{className:"scl",text:y<0?"요리주점":y+"년차"}),h("span",{className:"scn",text:g.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
+    const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon("hold",30),h("span",{className:"scl",text:y===-2?"50㎡ 미만":(y<0?"요리주점":y+"년차")}),h("span",{className:"scn",text:g.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
     cap.addEventListener("click",()=>{ if(HOLDOPEN.has(y)) HOLDOPEN.delete(y); else HOLDOPEN.add(y); render(); });
     frag.append(cap);
     if(open){ const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o))); frag.append(card); }

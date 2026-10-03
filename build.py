@@ -12,7 +12,7 @@ src=open(f'{here}/src/app.html').read()
 view=[];stars=[]
 extra=[dict(id=k,n=e['n'],a=e.get('a',''),dg=e['dg'],m=0,d='',s=e.get('s','기타'),g=1 if e.get('g') else 0,f='',manual=1) for k,e in ed.items() if e.get('manual') and e.get('n') and e.get('dg')]
 for r in rows+extra:
-    e=ed.get(r['id'],{}); h=e['h'] if 'h' in e else (e.get('s',r['s'])=='기타' or r.get('y',9)<5)
+    e=ed.get(r['id'],{}); h=e['h'] if 'h' in e else (e.get('s',r['s'])=='기타' or r.get('y',9)<5 or bool(r.get('sm')))
     if e.get('x'): continue
     hs=False
     if h:
