@@ -257,10 +257,17 @@ function h(tag, props, ...kids){
 }
 const CHAINRE=/점\)?\s*$/, NOTCHAIN=/(본점|반점|전문점|상점)\)?\s*$/;
 function chain0(r){ return r.c!==undefined ? !!r.c : (CHAINRE.test(r.n) && !NOTCHAIN.test(r.n)); }
-function loadFavs(){ try{ const v=JSON.parse(localStorage.getItem("fh-fav")||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
-const FAV=new Set(loadFavs());
-function toggleFav(id){ if(FAV.has(id)) FAV.delete(id); else FAV.add(id); try{ localStorage.setItem("fh-fav",JSON.stringify([...FAV])); }catch(e){} render(); }
-function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:FAV.has(r.id), x:!!(o&&o.x), h:(o&&o.h!==undefined)?!!o.h:s==="기타", c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
+/* 링크(STATIC): 즐겨찾기 = 주인이 정한 기본 + 내가 더한 것 - 내가 뺀 것 (내 폰에만 저장). 편집 페이지: 주인이 ★로 기본 즐겨찾기를 정함(DB). */
+function loadFavDelta(){ try{ const v=JSON.parse(localStorage.getItem("fh-fav2")||"{}"); return {add:Array.isArray(v.add)?v.add:[],rem:Array.isArray(v.rem)?v.rem:[]}; }catch(e){ return {add:[],rem:[]}; } }
+const FD=loadFavDelta(), DEFAULT_FAV=new Set(STARS_BAKED);
+function isFav(id){ return (DEFAULT_FAV.has(id)||FD.add.includes(id)) && !FD.rem.includes(id); }
+function toggleFav(id){
+  if(isFav(id)){ FD.add=FD.add.filter(x=>x!==id); if(DEFAULT_FAV.has(id) && !FD.rem.includes(id)) FD.rem.push(id); }
+  else { FD.rem=FD.rem.filter(x=>x!==id); if(!DEFAULT_FAV.has(id) && !FD.add.includes(id)) FD.add.push(id); }
+  try{ localStorage.setItem("fh-fav2",JSON.stringify(FD)); }catch(e){}
+  render();
+}
+function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:(STATIC?isFav(r.id):!!(o&&o.star)), x:!!(o&&o.x), h:(o&&o.h!==undefined)?!!o.h:s==="기타", c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
 function label(k){ const c=CATS.find(x=>x.k===k); return c&&c.label?c.label:k; }
 function mapUrl(r){ return "https://map.naver.com/p/search/"+encodeURIComponent("수지구 "+r.n); }
 function allItems(){ return DATA.map(r=>{const c=cur(r);return {r,s:c.s,star:c.star,x:c.x,h:c.h,c:c.c};}); }
@@ -306,7 +313,7 @@ function commit(id,next,prev){
   pending++; paintSave();
   const p=(commit.chain.get(id)||Promise.resolve()).then(async()=>{
     const ref=db.doc("edits/"+id);
-    if(next.s===r.s && !next.x && !!next.h===(next.s==="기타") && !!next.c===chain0(r)) await ref.delete(); else await ref.set({s:next.s,star:false,x:!!next.x,h:!!next.h,c:!!next.c});
+    if(next.s===r.s && !next.star && !next.x && !!next.h===(next.s==="기타") && !!next.c===chain0(r)) await ref.delete(); else await ref.set({s:next.s,star:!!next.star,x:!!next.x,h:!!next.h,c:!!next.c});
     pending--; lastSaved=new Date(); saveErr=false; paintSave();
   }).catch(e=>{
     pending--; saveErr=true;
@@ -322,8 +329,8 @@ commit.chain=new Map();
 function row(it,o){
   const r=it.r, lock=readOnly||!ready, isOpen=(S.open===r.id);
   const star=h("button",{className:"star",type:"button","aria-pressed":String(it.star),"aria-label":r.n+" 즐겨찾기",text:"★"});
-  star.disabled=false;
-  star.addEventListener("click",()=>toggleFav(r.id));
+  star.disabled=STATIC?false:lock;
+  star.addEventListener("click",()=>{ if(STATIC) toggleFav(r.id); else setCat(r.id,{s:it.s,star:!it.star,x:it.x,h:it.h},"star"); });
   const nm=h("div",{className:"nm"}); nm.append(r.n);
   if(r.g) nm.append(h("span",{className:"badge",text:"모범"}));
   if(it.c) nm.append(h("span",{className:"badge chain",text:"체인"}));
@@ -599,6 +606,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v3.1</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v3.2</p></div>
 </body>
 </html>
