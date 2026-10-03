@@ -118,6 +118,9 @@ button.pill[aria-pressed="true"]{background:var(--accent-soft);color:var(--accen
 .del.armed{background:var(--danger);color:#fff;padding-inline:10px}
 .restore{color:var(--accent)}
 .del:disabled,.restore:disabled{opacity:.5;cursor:default}
+.backupw{margin-top:34px;text-align:center}
+.backup{border:0;background:none;color:var(--muted);font-size:.9rem;padding:8px 14px;border-radius:999px;cursor:pointer}
+.backup:hover{background:var(--fill);color:var(--ink)}
 .empty{padding:56px 0;text-align:center;color:var(--muted)}
 [hidden]{display:none!important}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:#fff;padding:11px 14px 11px 18px;border-radius:999px;box-shadow:0 8px 28px rgba(43,38,34,.25);display:flex;gap:14px;align-items:center;font-size:.95rem;max-width:calc(100vw - 32px)}
@@ -192,7 +195,7 @@ function icon(k,size){ const s=h("span",{className:"ic"+(k==="trash"?" line":"")
 const S = {view:"home", key:null, dong:"all", sort:"old", onlyG:false, open:null, q:""};
 const ov = new Map();
 const byId = new Map(DATA.map(r=>[r.id,r]));
-let db = null, readOnly = false, readOnlyWhy = "";
+let dl = null, db = null, readOnly = false, readOnlyWhy = "";
 let pending=0, lastSaved=null, saveErr=false, ready=false;
 
 const $ = id => document.getElementById(id);
@@ -351,6 +354,16 @@ function renderHome(all){
     paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
   });
   frag.append(g3);
+  if(!STATIC && dl){
+    const bk=h("button",{className:"backup",type:"button",text:"내 컴퓨터에 백업"});
+    bk.addEventListener("click",async()=>{
+      const out={}; ov.forEach((v,k)=>{ const o={s:v.s,star:!!v.star,x:!!v.x}; if(v.h!==undefined) o.h=!!v.h; out[k]=o; });
+      const d=new Date(), ymd=d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");
+      try{ await dl.save({filename:"food-hunter-edits-"+ymd+".json",data:JSON.stringify(out,null,1)}); showToast("백업 파일을 저장했어요 ("+Object.keys(out).length+"건)",null); }
+      catch(e){ if(!e||e.code!=="declined") showToast("백업하지 못했어요. 잠시 후 다시 해보세요.",null); }
+    });
+    frag.append(h("div",{className:"backupw"},bk));
+  }
   body.replaceChildren(frag);
 }
 
@@ -437,6 +450,7 @@ render();
     if(!(window.claude && window.claude.use)){ readOnly=true; readOnlyWhy="미리보기 화면이라 편집은 저장되지 않아요."; return; }
     const user=await window.claude.use("user");
     const can = user ? await user.can("data.write") : null;
+    try{ dl=await window.claude.use("downloads"); }catch(e){ dl=null; }
     db=await window.claude.use("db");
     if(!db){ readOnly=true; readOnlyWhy="로그인한 화면에서 열면 분류를 고치고 저장할 수 있어요."; return; }
     if(can===false){ readOnly=true; readOnlyWhy="보기 전용이에요. 편집 권한을 받으면 분류를 바꿀 수 있어요."; }
