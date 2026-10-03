@@ -19,7 +19,17 @@ for r in rows:
     if e.get('star'): stars.append(r['id'])
 j=lambda o:json.dumps(o,ensure_ascii=False)
 def make(data,static,st): return src.replace('__DATA__',j(data)).replace('__STATIC__',static).replace('__STARS__',j(st))
-open(f'{here}/index.html','w').write(make(view,'true',stars))
+HEAD='''<meta name="theme-color" content="#f7f5f2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="오늘 뭐먹지">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+'''
+idx=make(view,'true',stars).replace('<meta name="color-scheme" content="light">\n','<meta name="color-scheme" content="light">\n'+HEAD,1)
+open(f'{here}/index.html','w').write(idx)
 os.makedirs(f'{here}/dist',exist_ok=True)
 open(f'{here}/dist/editor.html','w').write(make(rows,'false',[]))
 print('viewer',len(view),'stars',len(stars),'| editor',len(rows))
