@@ -18,7 +18,8 @@ for r in rows:
     view.append(r)
     if e.get('star'): stars.append(r['id'])
 j=lambda o:json.dumps(o,ensure_ascii=False)
-def make(data,static,st): return src.replace('__DATA__',j(data)).replace('__STATIC__',static).replace('__STARS__',j(st))
+VERSION=open(f'{here}/VERSION').read().strip()
+def make(data,static,st): return src.replace('__VERSION__',VERSION).replace('__DATA__',j(data)).replace('__STATIC__',static).replace('__STARS__',j(st))
 HEAD='''<meta name="theme-color" content="#f7f5f2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
