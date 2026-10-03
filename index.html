@@ -136,7 +136,16 @@ button.pill[aria-pressed="true"]{background:var(--accent-soft);color:var(--accen
 .pickbtn:active{transform:scale(.98)}
 .pickov{position:fixed;inset:0;z-index:40;background:rgba(43,38,34,.35);display:flex;align-items:flex-end;justify-content:center}
 .picksheet{width:100%;max-width:560px;background:var(--paper);border-radius:26px 26px 0 0;padding:26px 22px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(43,38,34,.18)}
-.pk-top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.pk-top{display:flex;align-items:center;gap:12px;margin-bottom:6px;min-height:64px}
+.pk-ico{flex:none}
+.pk-hint{color:var(--muted);text-align:center;padding:14px 0 18px;font-size:1rem}
+.pk-more{animation:fadeup .35s ease both}
+.pk-name.tick{animation:tick .09s ease-out}
+.pk-name.pop{animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes tick{from{opacity:.4;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.85)}to{transform:scale(1)}}
+@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pk-name.tick,.pk-name.pop,.pk-more{animation:none}}
 .pk-top .ic{--s:56px}
 .pk-name{font-size:1.7rem;line-height:1.25;overflow-wrap:anywhere}
 .pk-meta{color:var(--muted);font-size:.95rem;margin:2px 0}
@@ -466,30 +475,52 @@ function go(view,key){
 }
 
 /* ---------- pick ---------- */
+let pickTimer=null, pickLast=null;
+function stopPick(){ clearTimeout(pickTimer); pickTimer=null; }
 function pickFrom(pool){
   const ov$=$("pickov"), body=$("pickbody");
+  stopPick();
   if(!pool.length){ showToast("뽑을 가게가 없어요", null); return; }
-  const it=pool[Math.floor(Math.random()*pool.length)], r=it.r;
-  const tg=h("div",{className:"pk-tags"});
-  const t1=h("span",{className:"tag",text:label(it.s)}); paint(t1,it.s); tg.append(t1);
-  if(r.g) tg.append(h("span",{className:"badge",text:"모범"}));
-  if(it.c) tg.append(h("span",{className:"badge chain",text:"체인"}));
-  if(it.star) tg.append(h("span",{className:"badge",text:"★ 추천"}));
-  const again=h("button",{className:"pk-again",type:"button",text:"🎲 다시 뽑기"});
-  again.addEventListener("click",()=>pickFrom(pool));
+  let fin=pool[Math.floor(Math.random()*pool.length)];
+  if(pool.length>1) while(pickLast && fin.r.id===pickLast) fin=pool[Math.floor(Math.random()*pool.length)];
+  pickLast=fin.r.id;
+  const quick=window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const icoBox=h("div",{className:"pk-ico"}), nameEl=h("div",{className:"pk-name"}), hint=h("div",{className:"pk-hint",text:"두구두구…"});
+  const showItem=(it,cls)=>{ icoBox.replaceChildren(icon(it.s,56)); nameEl.textContent=it.r.n; nameEl.className="pk-name"+(cls?" "+cls:""); void nameEl.offsetWidth; };
   const close=h("button",{className:"pk-close",type:"button",text:"닫기"});
-  close.addEventListener("click",()=>{ ov$.hidden=true; });
-  body.replaceChildren(
-    h("div",{className:"pk-top"},icon(it.s,56),h("div",{className:"pk-name",text:r.n})),
-    tg,
-    h("div",{className:"pk-meta",text:r.dg+" · "+r.a}),
-    h("div",{className:"pk-meta",text:Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가"+((r.g&&r.f)?" · 주메뉴 "+r.f:"")}),
-    h("div",{className:"pk-act"},h("a",{className:"pk-map",href:mapUrl(r),target:"_blank",rel:"noopener",text:"지도 보기"}),again),
-    close);
+  close.addEventListener("click",()=>{ stopPick(); ov$.hidden=true; });
+  const reveal=()=>{
+    const r=fin.r, it=fin;
+    showItem(it,"pop"); hint.remove();
+    const tg=h("div",{className:"pk-tags"});
+    const t1=h("span",{className:"tag",text:label(it.s)}); paint(t1,it.s); tg.append(t1);
+    if(r.g) tg.append(h("span",{className:"badge",text:"모범"}));
+    if(it.c) tg.append(h("span",{className:"badge chain",text:"체인"}));
+    if(it.star) tg.append(h("span",{className:"badge",text:"★ 추천"}));
+    const again=h("button",{className:"pk-again",type:"button",text:"🎲 다시 뽑기"});
+    again.addEventListener("click",()=>pickFrom(pool));
+    const more=h("div",{className:"pk-more"},tg,
+      h("div",{className:"pk-meta",text:r.dg+" · "+r.a}),
+      h("div",{className:"pk-meta",text:Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가"+((r.g&&r.f)?" · 주메뉴 "+r.f:"")}),
+      h("div",{className:"pk-act"},h("a",{className:"pk-map",href:mapUrl(r),target:"_blank",rel:"noopener",text:"지도 보기"}),again));
+    body.replaceChildren(h("div",{className:"pk-top"},icoBox,nameEl),more,close);
+  };
+  body.replaceChildren(h("div",{className:"pk-top"},icoBox,nameEl),hint,close);
   ov$.hidden=false;
+  if(quick||pool.length<2){ reveal(); return; }
+  let delay=50, elapsed=0, prev=null;
+  const step=()=>{
+    if(elapsed>=1900){ reveal(); return; }
+    let it=pool[Math.floor(Math.random()*pool.length)];
+    if(it.r.id===prev) it=pool[(pool.indexOf(it)+1)%pool.length];
+    prev=it.r.id; showItem(it,"tick");
+    elapsed+=delay; delay=Math.round(delay*1.13);
+    pickTimer=setTimeout(step,delay);
+  };
+  step();
 }
-$("pickov").addEventListener("click",e=>{ if(e.target===$("pickov")) $("pickov").hidden=true; });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("pickov").hidden=true; });
+$("pickov").addEventListener("click",e=>{ if(e.target===$("pickov")){ stopPick(); $("pickov").hidden=true; } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ stopPick(); $("pickov").hidden=true; } });
 $("pickhome").addEventListener("click",()=>pickFrom(allItems().filter(i=>!i.x&&!i.h)));
 $("pickbtn2").addEventListener("click",()=>{
   const key=S.key; let base=itemsFor(key,allItems());
@@ -539,6 +570,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.2</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.3</p></div>
 </body>
 </html>
