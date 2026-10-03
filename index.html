@@ -189,8 +189,9 @@ const ICONS = {"hold": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle 
 const TRASH_SVG = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6\"/></svg>";
 function icon(k,size){ const s=h("span",{className:"ic"+(k==="trash"?" line":"")}); s.innerHTML=ICONS[k]||""; if(size) s.style.setProperty("--s",size+"px"); return s; }
 const S = {view:"home", key:null, dong:"all", sort:"old", onlyG:false, open:null, q:""};
-function loadStars(){ try{ const v=JSON.parse(localStorage.getItem("fh-stars")||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
-function saveStars(){ try{ localStorage.setItem("fh-stars",JSON.stringify([...ov].filter(([k,v])=>v.star).map(([k])=>k))); }catch(e){} }
+const STARS_BAKED = [];
+function loadStars(){ return STARS_BAKED; }
+function saveStars(){}
 const ov = new Map();
 const byId = new Map(DATA.map(r=>[r.id,r]));
 let db = null, readOnly = false, readOnlyWhy = "";
@@ -262,7 +263,7 @@ commit.chain=new Map();
 function row(it,o){
   const r=it.r, lock=readOnly||!ready, isOpen=(S.open===r.id);
   const star=h("button",{className:"star",type:"button","aria-pressed":String(it.star),"aria-label":r.n+" 즐겨찾기",text:"★"});
-  star.disabled=false;
+  star.disabled=true; if(!it.star) star.style.visibility="hidden";
   star.addEventListener("click",()=>setCat(r.id,{s:it.s,star:!it.star,x:it.x,h:it.h},"star"));
   const nm=h("div",{className:"nm"}); nm.append(r.n);
   if(r.g) nm.append(h("span",{className:"badge",text:"모범"}));
@@ -348,7 +349,7 @@ function renderHome(all){
   const g3=h("div",{className:"grid"});
   
   const holdN=all.filter(i=>!i.x && i.h).length;
-  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",vis.filter(i=>i.star).length]].forEach(([k,t2,n])=>{
+  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",vis.filter(i=>i.star).length]].filter(x=>x[0]!=="fav"||x[2]>0).forEach(([k,t2,n])=>{
     const b=h("button",{className:"sc",type:"button"},icon(k,34),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
   });
