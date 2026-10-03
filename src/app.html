@@ -130,7 +130,10 @@ button.pill[aria-pressed="true"]{background:var(--accent-soft);color:var(--accen
 .pb-chars.one{justify-content:center}
 .pb-ch{flex:1;display:flex;justify-content:center;animation:bob 1.6s ease-in-out infinite;animation-delay:var(--d,0s)}
 .pb-ch .ic{--s:30px;background:rgba(255,255,255,.92);border-radius:50%;padding:3px;box-sizing:content-box}
-.pb-main{font-size:1.2rem;line-height:1.3}
+.pb-main{font-size:1.7rem;line-height:1.25;display:flex;align-items:center;justify-content:center;gap:10px}
+.dice{display:inline-block;animation:roll 2.4s cubic-bezier(.5,0,.3,1) infinite;transform-origin:50% 55%}
+@keyframes roll{0%{transform:rotate(0) translateY(0)}20%{transform:rotate(180deg) translateY(-7px)}40%{transform:rotate(360deg) translateY(0)}100%{transform:rotate(360deg) translateY(0)}}
+@media (prefers-reduced-motion:reduce){.dice{animation:none}}
 .pb-sub{font-size:.9rem;opacity:.92;margin-top:2px}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.pb-ch{animation:none}}
@@ -484,18 +487,16 @@ function go(view,key){
 }
 
 /* ---------- pick ---------- */
-const HOME_LINES=["고르면 오늘 나랑 먹는 거다 🍽️","눌러 봐! 오늘 밥은 내가 책임질게","결정 장애? 나한테 맡겨 😋","자, 오늘의 운명을 돌려 보자!","걸리는 사람이 오늘 나랑 먹는 거야"];
-const LIST_LINES=["걸리면 나랑 먹는 거다 🍽️","여기서 걸리면 오늘은 나랑 먹는 거야","이 중에 하나, 나랑 같이 먹자!"];
-const pickLine=a=>a[Math.floor(Math.random()*a.length)];
+const dice=()=>h("span",{className:"dice","aria-hidden":"true",text:"🎲"});
 function fillHomePick(){
   const b=$("pickhome"); const row=h("div",{className:"pb-chars","aria-hidden":"true"});
   ["육류","탕류","밥류","면류","중식","일식","양식","세계음식"].forEach((k,i)=>{ const s=h("span",{className:"pb-ch"}); s.style.setProperty("--d",(i*0.12)+"s"); s.append(icon(k,30)); row.append(s); });
-  b.replaceChildren(row,h("div",{className:"pb-main",text:pickLine(HOME_LINES)}),h("div",{className:"pb-sub",text:"🎲 눌러서 뽑기"}));
+  b.replaceChildren(row,h("div",{className:"pb-main"},dice(),"뽑아보기"));
 }
 function fillListPick(key,title){
   const b=$("pickbtn2"); if(b.dataset.key===key && b.firstChild) return; b.dataset.key=key;
   const row=h("div",{className:"pb-chars one","aria-hidden":"true"}); const s=h("span",{className:"pb-ch"}); s.append(icon(key,30)); row.append(s);
-  b.replaceChildren(row,h("div",{className:"pb-main",text:"🎲 "+title+"에서 뽑기"}),h("div",{className:"pb-sub",text:pickLine(LIST_LINES)}));
+  b.replaceChildren(row,h("div",{className:"pb-main"},dice(),title+" 뽑아보기"));
 }
 let pickTimer=null, pickLast=null;
 function stopPick(){ clearTimeout(pickTimer); pickTimer=null; }
