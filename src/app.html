@@ -590,12 +590,12 @@ const dice=()=>h("span",{className:"dice","aria-hidden":"true",text:"🎲"});
 function fillHomePick(){
   const b=$("pickhome"); const row=h("div",{className:"pb-chars","aria-hidden":"true"});
   ["육류","탕류","밥류","면류","중식","일식","양식","세계음식"].forEach((k,i)=>{ const s=h("span",{className:"pb-ch"}); s.style.setProperty("--d",(i*0.12)+"s"); s.append(icon(k,30)); row.append(s); });
-  b.replaceChildren(row,h("div",{className:"pb-main"},dice(),"뽑기"));
+  b.replaceChildren(row,h("div",{className:"pb-main"},"랜덤뽑기"));
 }
 function fillListPick(key,title){
   const b=$("pickbtn2"); if(b.dataset.key===key && b.firstChild) return; b.dataset.key=key;
   const row=h("div",{className:"pb-chars one","aria-hidden":"true"}); const s=h("span",{className:"pb-ch"}); s.append(icon(key,30)); row.append(s);
-  b.replaceChildren(row,h("div",{className:"pb-main"},dice(),title+" 뽑기"));
+  b.replaceChildren(row,h("div",{className:"pb-main"},"랜덤뽑기"));
 }
 let pickTimer=null, pickLast=null;
 function stopPick(){ clearTimeout(pickTimer); pickTimer=null; }
