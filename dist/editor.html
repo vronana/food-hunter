@@ -65,6 +65,12 @@ h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:ba
 .cm{font-size:.95rem;color:var(--muted)}
 .sc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
 .trashlink{margin-top:26px;width:100%}
+.addbtn{width:100%;margin-top:14px;border:2px dashed #e3cdb4;background:transparent;color:var(--accent);border-radius:16px;padding:13px;font:inherit;font-size:1.02rem;cursor:pointer}
+.addform{margin-top:12px;background:var(--paper);border-radius:20px;box-shadow:var(--shadow);padding:14px;display:grid;gap:10px}
+.addform input[type=text],.addform select{width:100%;border:0;background:var(--fill);color:var(--ink);font:inherit;font-size:1.02rem;padding:12px 14px;border-radius:12px}
+.addform .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.addform .chk{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:1rem}
+.addform .pbtn{padding:12px;border-radius:12px}
 .yrcard{width:100%;margin-top:12px}
 .yrcard+.card{margin-top:8px}
 .sc .ic{grid-row:1/3}
@@ -215,6 +221,17 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
     <p class="banner" id="banner" hidden></p>
     <p class="notice" id="notice" hidden></p>
     <button type="button" class="pickbtn rich listpick" id="pickbtn2"></button>
+    <button type="button" class="addbtn" id="addbtn" hidden>+ 가게 직접 추가</button>
+    <form class="addform" id="addform" hidden autocomplete="off">
+      <input id="an" type="text" maxlength="60" placeholder="가게 이름 (필수)" aria-label="가게 이름">
+      <div class="two">
+        <select id="adg" aria-label="동네"></select>
+        <select id="asel" aria-label="카테고리"></select>
+      </div>
+      <input id="aa" type="text" maxlength="120" placeholder="주소 (선택) 예: 포은대로 536" aria-label="주소">
+      <label class="chk"><input id="ag" type="checkbox"> 모범음식점이에요</label>
+      <div class="two"><button type="submit" class="pbtn main">추가</button><button type="button" class="pbtn" id="acancel">닫기</button></div>
+    </form>
     <div id="listbody"></div>
   </section>
 </div>
@@ -233,7 +250,7 @@ const CATS = [
 const CATKEYS = CATS.map(c=>c.k);
 const DONGS = ["풍덕천동","죽전동","동천동","상현동","성복동","신봉동","고기동"];
 const SORTS = {
-  old:(a,b)=>a.r.d.localeCompare(b.r.d)||a.r.n.localeCompare(b.r.n,"ko"),
+  old:(a,b)=>(a.r.d||"9999").localeCompare(b.r.d||"9999")||a.r.n.localeCompare(b.r.n,"ko"),
   big:(a,b)=>b.r.m-a.r.m||a.r.n.localeCompare(b.r.n,"ko"),
   name:(a,b)=>a.r.n.localeCompare(b.r.n,"ko")
 };
@@ -309,6 +326,11 @@ function setCat(id, next, verb){
   else if(verb==="chain") showToast(next.c?"‘"+r.n+"’에 체인 표시를 했어요":"‘"+r.n+"’의 체인 표시를 뺐어요", ()=>commit(id,prev,next));
   else if(verb==="restore") showToast("‘"+r.n+"’을(를) 복구했어요", ()=>commit(id,prev,next));
 }
+function payload(r,next){
+  const o={s:next.s,star:!!next.star,x:!!next.x,h:!!next.h,c:!!next.c};
+  if(r.manual) Object.assign(o,{manual:true,n:r.n,a:r.a||"",dg:r.dg,g:r.g?1:0});
+  return o;
+}
 function commit(id,next,prev){
   const r=byId.get(id);
   ov.set(id,{s:next.s,star:next.star,x:!!next.x,h:!!next.h,c:!!next.c});
@@ -317,7 +339,7 @@ function commit(id,next,prev){
   pending++; paintSave();
   const p=(commit.chain.get(id)||Promise.resolve()).then(async()=>{
     const ref=db.doc("edits/"+id);
-    if(next.s===r.s && !next.star && !next.x && !!next.h===hold0(r,next.s) && !!next.c===chain0(r)) await ref.delete(); else await ref.set({s:next.s,star:!!next.star,x:!!next.x,h:!!next.h,c:!!next.c});
+    if(!r.manual && next.s===r.s && !next.star && !next.x && !!next.h===hold0(r,next.s) && !!next.c===chain0(r)) await ref.delete(); else await ref.set(payload(r,next));
     pending--; lastSaved=new Date(); saveErr=false; paintSave();
   }).catch(e=>{
     pending--; saveErr=true;
@@ -339,7 +361,9 @@ function row(it,o){
   if(r.g) nm.append(h("span",{className:"badge",text:"모범"}));
   if(it.c) nm.append(h("span",{className:"badge chain",text:"체인"}));
   if(o.tag){ const tg=h("span",{className:"tag",text:label(it.s)}); paint(tg,it.s); nm.append(tg); }
-  const info=h("div",{className:"info"},nm,h("div",{className:"meta",text:r.a}),h("div",{className:"meta",text:Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가"}));
+  const info=h("div",{className:"info"},nm,h("div",{className:"meta",text:r.a}));
+  if(r.d) info.append(h("div",{className:"meta",text:Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가"}));
+  else if(!STATIC) info.append(h("div",{className:"meta",text:"직접 추가한 가게"}));
   if(r.g && r.f) info.append(h("div",{className:"menu",text:"주메뉴 "+r.f}));
   const map=h("a",{className:"map",href:mapUrl(r),target:"_blank",rel:"noopener","aria-label":r.n+" 지도에서 보기",text:"지도"});
   const ctl=h("div",{className:"ctl"},map);
@@ -477,6 +501,8 @@ function renderList(all){
   $("ls").textContent=shown.length+"곳"+(mixed?(" · "+MIXED[key][1]):(c&&c.g?" · "+c.g:""));
   $("pickbtn2").hidden=(key==="hold"||key==="trash"); fillListPick(key,title);
   $("banner").hidden=true;
+  const canAdd=!STATIC && key==="hold" && !readOnly && ready;
+  $("addbtn").hidden=!canAdd || S.adding; $("addform").hidden=!(canAdd && S.adding);
   const nt=$("notice"); nt.textContent=readOnly?(readOnlyWhy||(STATIC?"":"보기 전용이에요.")):""; nt.hidden=!(readOnly && nt.textContent);
   const frag=document.createDocumentFragment();
   if(!shown.length) frag.append(h("p",{className:"empty",text:key==="trash"?"삭제한 가게가 없어요.":key==="hold"?"보류한 가게가 없어요.":key==="fav"?"별표를 누른 가게가 아직 없어요.":"조건에 맞는 가게가 없어요."}));
@@ -602,6 +628,30 @@ $("back").addEventListener("click",()=>{ if(S.view==="list" && S.key==="trash") 
 $("dongsel").addEventListener("change",e=>{ S.dong=e.target.value; render(); });
 $("sortsel").addEventListener("change",e=>{ S.sort=e.target.value; render(); });
 $("kindsel").addEventListener("change",e=>{ S.kind=e.target.value; render(); });
+$("adg").replaceChildren(h("option",{value:"",text:"동네 고르기"}),...DONGS.map(d=>h("option",{value:d,text:d})));
+$("asel").replaceChildren(...CATS.map(c=>h("option",{value:c.k,text:c.label||c.k})));
+$("asel").value="기타";
+$("addbtn").addEventListener("click",()=>{ S.adding=true; render(); setTimeout(()=>$("an").focus(),50); });
+$("acancel").addEventListener("click",()=>{ S.adding=false; render(); });
+$("addform").addEventListener("submit",e=>{
+  e.preventDefault();
+  const n=$("an").value.trim(), dg=$("adg").value, sc=$("asel").value, a=$("aa").value.trim(), g=$("ag").checked;
+  if(!n){ showToast("가게 이름을 적어 주세요.",null); $("an").focus(); return; }
+  if(!dg){ showToast("동네를 골라 주세요.",null); return; }
+  const id="m-"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const nr={id,n,a,dg,m:0,d:"",s:sc,g:g?1:0,f:"",manual:1};
+  DATA.push(nr); byId.set(id,nr);
+  const next={s:sc,star:false,x:false,h:sc==="기타",c:chain0(nr)};
+  ov.set(id,next);
+  $("an").value=""; $("aa").value=""; $("ag").checked=false;
+  render();
+  showToast("‘"+n+"’을(를) "+(sc==="기타"?"보류함":label(sc))+"에 추가했어요", ()=>commit(id,Object.assign({},next,{x:true}),next));
+  if(!db) return;
+  pending++; paintSave();
+  db.doc("edits/"+id).set(payload(nr,next)).then(()=>{ pending--; lastSaved=new Date(); saveErr=false; paintSave(); }).catch(()=>{
+    pending--; saveErr=true; ov.set(id,Object.assign({},next,{x:true})); render(); showToast("저장하지 못했어요. 잠시 후 다시 해보세요.",null);
+  });
+});
 $("q").addEventListener("input",e=>{ S.q=e.target.value; render(); });
 (function(){ const d=new Date(); $("eyebrow").hidden=true; paint($("home"),"x"); })();
 render();
@@ -618,7 +668,7 @@ render();
     if(can===false){ readOnly=true; readOnlyWhy="보기 전용이에요. 편집 권한을 받으면 분류를 바꿀 수 있어요."; }
     db.collection("edits").onSnapshot(snap=>{
       ov.clear();
-      snap.docs.forEach(d=>{ const v=d.data()||{}; if(byId.has(d.id)) ov.set(d.id,{s:v.s,star:!!v.star,x:!!v.x,h:(v.h===undefined?undefined:!!v.h),c:(v.c===undefined?undefined:!!v.c)}); });
+      snap.docs.forEach(d=>{ const v=d.data()||{}; if(v.manual && !byId.has(d.id) && v.n && DONGS.includes(v.dg)){ const nr={id:d.id,n:String(v.n),a:String(v.a||""),dg:v.dg,m:0,d:"",s:CATKEYS.includes(v.s)?v.s:"기타",g:v.g?1:0,f:"",manual:1}; DATA.push(nr); byId.set(nr.id,nr); } if(byId.has(d.id)) ov.set(d.id,{s:v.s,star:!!v.star,x:!!v.x,h:(v.h===undefined?undefined:!!v.h),c:(v.c===undefined?undefined:!!v.c)}); });
       render();
     },()=>{ showToast("저장된 분류를 불러오지 못했어요.", null); });
   }catch(e){ /* page still works read-only */ }
@@ -626,6 +676,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.0</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.1</p></div>
 </body>
 </html>
