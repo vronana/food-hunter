@@ -228,6 +228,9 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
 
   <section id="listview" hidden>
     <div class="lh"><div class="lhead"><span id="lic"></span><h1 id="lt"></h1></div><p class="sub" id="ls"></p></div>
+    <p class="banner" id="banner" hidden></p>
+    <p class="notice" id="notice" hidden></p>
+    <button type="button" class="pickbtn rich listpick" id="pickbtn2"></button>
     <div class="pills" id="pills">
       <span class="selw"><select class="pill" id="dongsel" aria-label="동네"></select></span>
       <span class="selw"><select class="pill" id="kindsel" aria-label="가게 종류"></select></span>
@@ -235,9 +238,6 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
         <option value="name">이름순</option><option value="old">오래된 순</option><option value="big">넓은 순</option>
       </select></span>
     </div>
-    <p class="banner" id="banner" hidden></p>
-    <p class="notice" id="notice" hidden></p>
-    <button type="button" class="pickbtn rich listpick" id="pickbtn2"></button>
     <button type="button" class="addbtn" id="addbtn" hidden>+ 가게 직접 추가</button>
     <form class="addform" id="addform" hidden autocomplete="off">
       <input id="an" type="text" maxlength="60" placeholder="가게 이름 (필수)" aria-label="가게 이름">
@@ -709,6 +709,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.5</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.6</p></div>
 </body>
 </html>
