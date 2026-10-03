@@ -41,7 +41,9 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
 .ic.line{color:var(--muted)}
 .lhead{display:flex;align-items:center;gap:12px}
 
-.hero{padding-block:26px 4px}
+.top.slim{min-height:0;padding-block:0;height:0;overflow:visible}
+.hero{padding-block:18px 4px}
+.top.slim + * .hero, .top.slim ~ * .hero{padding-block:max(18px,env(safe-area-inset-top,0px)) 4px}
 .eyebrow{margin:0 0 8px;color:var(--muted);font-size:1rem}
 h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:balance}
 .mark{color:var(--accent)}
@@ -242,6 +244,7 @@ function itemsFor(key,all){
 }
 
 /* ---------- saving ---------- */
+function slimTop(){ const tp=document.querySelector(".top"); if(tp) tp.classList.toggle("slim", $("back").hidden && $("save").hidden); }
 function paintSave(){
   const el=$("save"); let txt, cls="save";
   if(!ready) txt="저장 연결 중…";
@@ -251,6 +254,7 @@ function paintSave(){
   else if(lastSaved) txt="✓ 저장됨 · "+lastSaved.toLocaleTimeString("ko-KR",{hour:"numeric",minute:"2-digit"});
   else txt="✓ 바꾸면 바로 저장돼요";
   el.className=cls; el.textContent=txt; el.hidden=!saveErr;
+  slimTop();
 }
 function setCat(id, next, verb){
   const r=byId.get(id); const prev=cur(r);
@@ -434,7 +438,7 @@ function renderList(all){
 }
 
 function paintTop(tc){
-  $("back").hidden=S.view!=="list";
+  $("back").hidden=S.view!=="list"; slimTop();
   const tb=$("trashbtn");
   tb.hidden=true;
   $("trashn").textContent=tc>0?tc:"";
@@ -527,6 +531,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.1</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v1.2</p></div>
 </body>
 </html>
