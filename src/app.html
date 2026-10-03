@@ -51,10 +51,7 @@ h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:ba
 .hero h1{line-height:1}
 .hero .sub{margin-top:0;line-height:1.1}
 .sub{margin:10px 0 0;color:var(--muted);font-size:1rem}
-.sbtn{position:absolute;right:2px;top:52px;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
-.sbtn.on{background:var(--ink);color:var(--paper)}
 .search{position:relative;margin-block:22px 4px}
-.search[hidden]{display:none}
 .search input{width:100%;border:0;background:var(--fill);color:var(--ink);font-size:1.05rem;padding:14px 16px 14px 44px;border-radius:14px}
 .search input::placeholder{color:var(--muted)}
 .search::before{content:"";position:absolute;left:17px;top:50%;width:11px;height:11px;border:2px solid var(--muted);border-radius:50%;transform:translateY(-62%)}
@@ -216,12 +213,11 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
   <section id="home">
     <div class="hero">
       <span class="region">수지구</span>
-      <button type="button" class="sbtn" id="sbtn" aria-label="검색"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button>
       <p class="eyebrow" id="eyebrow"></p>
       <h1>오늘 <span class="mark">뭐먹지?</span></h1>
       <p class="sub" id="sub"></p>
       <button type="button" class="pickbtn rich" id="pickhome" aria-label="오늘 뭐 먹을지 뽑기"></button>
-      <div class="search" id="sbox" hidden><input id="q" type="search" placeholder="가게 이름·동네·음식 검색" autocomplete="off" enterkeyhint="search" aria-label="가게 검색"></div>
+      <div class="search"><input id="q" type="search" autocomplete="off" enterkeyhint="search" aria-label="가게 검색"></div>
     </div>
     <div id="homebody"></div>
   </section>
@@ -708,7 +704,6 @@ $("addform").addEventListener("submit",e=>{
   });
 });
 $("q").addEventListener("input",e=>{ S.q=e.target.value; render(); });
-$("sbtn").addEventListener("click",()=>{ const box=$("sbox"), open=box.hidden; box.hidden=!open; $("sbtn").classList.toggle("on",open); if(open) $("q").focus(); else { $("q").value=""; S.q=""; render(); } });
 (function(){ const d=new Date(); $("eyebrow").hidden=true; paint($("home"),"x"); })();
 render();
 
