@@ -189,7 +189,8 @@ const ICONS = {"hold": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle 
 const TRASH_SVG = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6\"/></svg>";
 function icon(k,size){ const s=h("span",{className:"ic"+(k==="trash"?" line":"")}); s.innerHTML=ICONS[k]||""; if(size) s.style.setProperty("--s",size+"px"); return s; }
 const S = {view:"home", key:null, dong:"all", sort:"old", onlyG:false, open:null, q:""};
-const STARS = [];
+function loadStars(){ try{ const v=JSON.parse(localStorage.getItem("fh-stars")||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
+function saveStars(){ try{ localStorage.setItem("fh-stars",JSON.stringify([...ov].filter(([k,v])=>v.star).map(([k])=>k))); }catch(e){} }
 const ov = new Map();
 const byId = new Map(DATA.map(r=>[r.id,r]));
 let db = null, readOnly = false, readOnlyWhy = "";
@@ -239,6 +240,7 @@ function setCat(id, next, verb){
 function commit(id,next,prev){
   const r=byId.get(id);
   ov.set(id,{s:next.s,star:next.star,x:!!next.x,h:!!next.h});
+  saveStars();
   render();
   if(!db) return;
   pending++; paintSave();
@@ -260,7 +262,7 @@ commit.chain=new Map();
 function row(it,o){
   const r=it.r, lock=readOnly||!ready, isOpen=(S.open===r.id);
   const star=h("button",{className:"star",type:"button","aria-pressed":String(it.star),"aria-label":r.n+" 즐겨찾기",text:"★"});
-  star.disabled=lock;
+  star.disabled=false;
   star.addEventListener("click",()=>setCat(r.id,{s:it.s,star:!it.star,x:it.x,h:it.h},"star"));
   const nm=h("div",{className:"nm"}); nm.append(r.n);
   if(r.g) nm.append(h("span",{className:"badge",text:"모범"}));
@@ -346,7 +348,7 @@ function renderHome(all){
   const g3=h("div",{className:"grid"});
   
   const holdN=all.filter(i=>!i.x && i.h).length;
-  [["g","모범음식점",vis.filter(i=>i.r.g).length]].forEach(([k,t2,n])=>{
+  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",vis.filter(i=>i.star).length]].forEach(([k,t2,n])=>{
     const b=h("button",{className:"sc",type:"button"},icon(k,34),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
   });
@@ -375,7 +377,14 @@ function renderList(all){
   const nt=$("notice"); nt.textContent=readOnly?(readOnlyWhy||(STATIC?"":"보기 전용이에요.")):""; nt.hidden=!(readOnly && nt.textContent);
   const frag=document.createDocumentFragment();
   if(!shown.length) frag.append(h("p",{className:"empty",text:key==="trash"?"삭제한 가게가 없어요.":key==="hold"?"보류한 가게가 없어요.":key==="fav"?"별표를 누른 가게가 아직 없어요.":"조건에 맞는 가게가 없어요."}));
-  else frag.append(groups(shown,{tag:mixed}));
+  else {
+    const favs=(key==="fav"||key==="trash"||key==="hold")?[]:shown.filter(i=>i.star);
+    if(favs.length){
+      frag.append(h("div",{className:"cap"},h("b",{text:"★ 즐겨찾기"}),h("span",{text:favs.length+"곳"})));
+      const fc=h("div",{className:"card"}); favs.forEach(i=>fc.append(row(i,{tag:mixed}))); frag.append(fc);
+    }
+    frag.append(groups(shown.filter(i=>!favs.includes(i)),{tag:mixed}));
+  }
   if(key==="hold"){
     const tn=all.filter(i=>i.x).length;
     const tb=h("button",{className:"sc trashlink",type:"button"},icon("trash",30),h("span",{className:"scl",text:"삭제함"}),h("span",{className:"scn",text:tn+"곳"}));
@@ -420,7 +429,7 @@ $("back").addEventListener("click",()=>{ if(S.view==="list" && S.key==="trash") 
 $("dongsel").addEventListener("change",e=>{ S.dong=e.target.value; render(); });
 $("sortsel").addEventListener("change",e=>{ S.sort=e.target.value; render(); });
 $("gbtn").addEventListener("click",()=>{ S.onlyG=!S.onlyG; render(); });
-STARS.forEach(id=>ov.set(id,{s:byId.get(id).s,star:true,x:false,h:false}));
+loadStars().forEach(id=>{ if(byId.has(id)) ov.set(id,{s:byId.get(id).s,star:true,x:false,h:false}); });
 (function(){ const d=new Date(); $("eyebrow").hidden=true; paint($("home"),"x"); })();
 render();
 
