@@ -10,7 +10,7 @@ ed=json.load(open(f'{here}/data/edits.json')) if os.path.exists(f'{here}/data/ed
 src=open(f'{here}/src/app.html').read()
 view=[];stars=[]
 for r in rows:
-    e=ed.get(r['id'],{}); h=e['h'] if 'h' in e else e.get('s',r['s'])=='기타'
+    e=ed.get(r['id'],{}); h=e['h'] if 'h' in e else (e.get('s',r['s'])=='기타' or r.get('y',9)<5)
     if e.get('x'): continue
     if h: continue
     r=dict(r); r['s']=e.get('s',r['s'])

@@ -267,7 +267,8 @@ function toggleFav(id){
   try{ localStorage.setItem("fh-fav2",JSON.stringify(FD)); }catch(e){}
   render();
 }
-function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:(STATIC?isFav(r.id):!!(o&&o.star)), x:!!(o&&o.x), h:(o&&o.h!==undefined)?!!o.h:s==="기타", c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
+function hold0(r,s){ return s==="기타" || (r.y!==undefined && r.y<5); }
+function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:(STATIC?isFav(r.id):!!(o&&o.star)), x:!!(o&&o.x), h:(o&&o.h!==undefined)?!!o.h:hold0(r,s), c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
 function label(k){ const c=CATS.find(x=>x.k===k); return c&&c.label?c.label:k; }
 function mapUrl(r){ return "https://map.naver.com/p/search/"+encodeURIComponent("수지구 "+r.n); }
 function allItems(){ return DATA.map(r=>{const c=cur(r);return {r,s:c.s,star:c.star,x:c.x,h:c.h,c:c.c};}); }
@@ -313,7 +314,7 @@ function commit(id,next,prev){
   pending++; paintSave();
   const p=(commit.chain.get(id)||Promise.resolve()).then(async()=>{
     const ref=db.doc("edits/"+id);
-    if(next.s===r.s && !next.star && !next.x && !!next.h===(next.s==="기타") && !!next.c===chain0(r)) await ref.delete(); else await ref.set({s:next.s,star:!!next.star,x:!!next.x,h:!!next.h,c:!!next.c});
+    if(next.s===r.s && !next.star && !next.x && !!next.h===hold0(r,next.s) && !!next.c===chain0(r)) await ref.delete(); else await ref.set({s:next.s,star:!!next.star,x:!!next.x,h:!!next.h,c:!!next.c});
     pending--; lastSaved=new Date(); saveErr=false; paintSave();
   }).catch(e=>{
     pending--; saveErr=true;
@@ -379,6 +380,16 @@ function row(it,o){
   }
   el.append(p);
   return el;
+}
+function groupsHold(items,o){
+  const frag=document.createDocumentFragment();
+  [4,3,2,1,0,-1].forEach(y=>{
+    const g=items.filter(i=>(i.r.y===undefined?-1:i.r.y)===y); if(!g.length) return;
+    const cap=h("div",{className:"cap"},h("b",{text:y<0?"5년 이상 · 분류 대기":y+"년차"}),h("span",{text:g.length+"곳"}));
+    const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o)));
+    frag.append(cap,card);
+  });
+  return frag;
 }
 function groups(items,o){
   const frag=document.createDocumentFragment();
@@ -467,7 +478,7 @@ function renderList(all){
       frag.append(h("div",{className:"cap"},h("b",{text:"★ 즐겨찾기"}),h("span",{text:favs.length+"곳"})));
       const fc=h("div",{className:"card"}); favs.forEach(i=>fc.append(row(i,{tag:mixed}))); frag.append(fc);
     }
-    frag.append(groups(shown.filter(i=>!favs.includes(i)),{tag:mixed}));
+    frag.append((key==="hold"?groupsHold:groups)(shown.filter(i=>!favs.includes(i)),{tag:mixed}));
   }
   if(key==="hold"){
     const tn=all.filter(i=>i.x).length;
