@@ -51,7 +51,10 @@ h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:ba
 .hero h1{line-height:1}
 .hero .sub{margin-top:0;line-height:1.1}
 .sub{margin:10px 0 0;color:var(--muted);font-size:1rem}
+.sbtn{position:absolute;right:2px;top:52px;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.sbtn.on{background:var(--ink);color:var(--paper)}
 .search{position:relative;margin-block:22px 4px}
+.search[hidden]{display:none}
 .search input{width:100%;border:0;background:var(--fill);color:var(--ink);font-size:1.05rem;padding:14px 16px 14px 44px;border-radius:14px}
 .search input::placeholder{color:var(--muted)}
 .search::before{content:"";position:absolute;left:17px;top:50%;width:11px;height:11px;border:2px solid var(--muted);border-radius:50%;transform:translateY(-62%)}
@@ -60,14 +63,15 @@ h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:ba
 .lab{margin:34px 0 12px;padding-inline:4px;font-size:.95rem;color:var(--muted)}
 .lab:empty{display:none}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.cc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 14px;cursor:pointer;display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center;transition:transform .15s}
+.grid.one{grid-template-columns:1fr}
+.cc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:20px 22px;cursor:pointer;display:grid;grid-template-columns:auto 1fr;column-gap:20px;align-items:center;transition:transform .15s}
 .cc:hover{transform:translateY(-2px)}
 .cc:active{transform:scale(.98)}
 .cc .ic{grid-row:1/3}
 .cc .cn{align-self:end}
 .cc .cm{align-self:start}
-.cn{font-size:1.3rem;line-height:1.25;white-space:nowrap}
-@media(max-width:360px){.sc{padding:12px 10px;column-gap:6px}.sc .scl{font-size:1rem}.cc{padding:12px 10px;column-gap:6px}.cn{font-size:1.15rem}.sc .scl{font-size:1rem}}
+.cn{font-size:1.5rem;line-height:1.25;white-space:nowrap}
+@media(max-width:360px){.sc{padding:12px 10px;column-gap:6px}.sc .scl{font-size:1rem}.cc{padding:16px 14px;column-gap:14px}.cn{font-size:1.35rem}.sc .scl{font-size:1rem}}
 .cm{font-size:.95rem;color:var(--muted)}
 .sc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:center;min-width:0}
 .trashlink{margin-top:26px;width:100%}
@@ -212,11 +216,12 @@ footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
   <section id="home">
     <div class="hero">
       <span class="region">수지구</span>
+      <button type="button" class="sbtn" id="sbtn" aria-label="검색"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button>
       <p class="eyebrow" id="eyebrow"></p>
       <h1>오늘 <span class="mark">뭐먹지?</span></h1>
       <p class="sub" id="sub"></p>
       <button type="button" class="pickbtn rich" id="pickhome" aria-label="오늘 뭐 먹을지 뽑기"></button>
-      <div class="search"><input id="q" type="search" placeholder="가게 이름·동네·음식 검색" autocomplete="off" enterkeyhint="search" aria-label="가게 검색"></div>
+      <div class="search" id="sbox" hidden><input id="q" type="search" placeholder="가게 이름·동네·음식 검색" autocomplete="off" enterkeyhint="search" aria-label="가게 검색"></div>
     </div>
     <div id="homebody"></div>
   </section>
@@ -489,19 +494,19 @@ function renderHome(all){
   }
   const count=k=>vis.filter(i=>i.s===k).length;
   const card=k=>{
-    const b=h("button",{className:"cc",type:"button"},icon(k,60),h("span",{className:"cn",text:label(k)}),h("span",{className:"cm",text:count(k)+"곳"}));
+    const b=h("button",{className:"cc",type:"button"},icon(k,100),h("span",{className:"cn",text:label(k)}),h("span",{className:"cm",text:count(k)+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); return b;
   };
   frag.append(h("p",{className:"lab",text:"한식"}));
-  const g1=h("div",{className:"grid"}); ["육류","탕류","밥류","면류"].forEach(k=>g1.append(card(k))); frag.append(g1);
+  const g1=h("div",{className:"grid one"}); ["육류","탕류","밥류","면류"].forEach(k=>g1.append(card(k))); frag.append(g1);
   frag.append(h("p",{className:"lab",text:"이외"}));
-  const g2=h("div",{className:"grid"}); ["중식","일식","양식","세계음식"].forEach(k=>g2.append(card(k))); frag.append(g2);
+  const g2=h("div",{className:"grid one"}); ["중식","일식","양식","세계음식"].forEach(k=>g2.append(card(k))); frag.append(g2);
   frag.append(h("p",{className:"lab",text:"바로가기"}));
   const g3=h("div",{className:"grid"});
   
   const holdN=all.filter(i=>!i.x && i.h).length;
   [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",all.filter(i=>!i.x && i.star).length],["chain","체인점",vis.filter(i=>i.c).length],["hold","보류함",holdN]].filter(x=>(SHOW_G||x[0]!=="g") && (x[0]!=="fav"||x[2]>0) && (!STATIC||x[0]!=="hold")).forEach(([k,t2,n])=>{
-    const b=h("button",{className:"sc",type:"button"},icon(k,44),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
+    const b=h("button",{className:"sc",type:"button"},icon(k,56),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
   });
   frag.append(g3);
@@ -703,6 +708,7 @@ $("addform").addEventListener("submit",e=>{
   });
 });
 $("q").addEventListener("input",e=>{ S.q=e.target.value; render(); });
+$("sbtn").addEventListener("click",()=>{ const box=$("sbox"), open=box.hidden; box.hidden=!open; $("sbtn").classList.toggle("on",open); if(open) $("q").focus(); else { $("q").value=""; S.q=""; render(); } });
 (function(){ const d=new Date(); $("eyebrow").hidden=true; paint($("home"),"x"); })();
 render();
 
