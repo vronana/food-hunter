@@ -1,10 +1,31 @@
 {
+ "5640000-101-2025-00153": {
+  "c": true,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2010-00221": {
   "c": false,
   "h": false,
   "s": "중식",
   "star": true,
   "x": false
+ },
+ "5640000-101-2006-00281": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "5640000-101-2009-00131": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2000-00342": {
   "s": "일식",
@@ -13,6 +34,25 @@
  "5640000-101-2017-00102": {
   "s": "육류",
   "star": false
+ },
+ "5640000-101-2017-00037": {
+  "c": false,
+  "h": false,
+  "s": "일식",
+  "star": true,
+  "x": false
+ },
+ "m-mushyn5esds": {
+  "a": "",
+  "c": false,
+  "dg": "죽전동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "담솥",
+  "s": "밥류",
+  "star": true,
+  "x": false
  },
  "5640000-101-2019-00181": {
   "s": "밥류",
@@ -33,6 +73,20 @@
   "star": true,
   "x": false
  },
+ "5640000-101-2026-00207": {
+  "c": false,
+  "h": true,
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2008-00096": {
+  "c": false,
+  "h": false,
+  "s": "육류",
+  "star": false,
+  "x": false
+ },
  "5640000-101-2020-00054": {
   "c": false,
   "h": false,
@@ -44,9 +98,30 @@
   "s": "밥류",
   "star": false
  },
+ "5640000-101-2006-00245": {
+  "c": false,
+  "h": false,
+  "s": "면류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-1997-00179": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2006-00150": {
   "s": "기타",
   "star": true
+ },
+ "5640000-101-2017-00041": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-1997-00167": {
   "s": "기타",
@@ -73,9 +148,35 @@
   "star": false,
   "x": true
  },
+ "m-mushxahn4fq": {
+  "a": "",
+  "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "소백산",
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2019-00100": {
   "s": "밥류",
   "star": false
+ },
+ "5640000-101-2009-00234": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "5640000-101-2019-00192": {
+  "c": true,
+  "h": false,
+  "s": "중식",
+  "star": true,
+  "x": false
  },
  "5640000-101-2020-00027": {
   "c": true,
@@ -93,6 +194,13 @@
   "star": false,
   "x": false
  },
+ "5640000-101-2025-00030": {
+  "c": false,
+  "h": true,
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-1996-00173": {
   "s": "기타",
   "star": true,
@@ -101,6 +209,13 @@
  "5640000-101-2009-00029": {
   "s": "기타",
   "star": true
+ },
+ "5640000-101-2004-00519": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
  },
  "5640000-101-2019-00193": {
   "c": true,
@@ -115,6 +230,13 @@
   "s": "일식",
   "star": true,
   "x": false
+ },
+ "5640000-101-2010-00049": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2001-00492": {
   "s": "육류",
@@ -140,10 +262,41 @@
   "s": "육류",
   "star": false
  },
+ "m-mushtmicn2d": {
+  "a": "",
+  "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "서브웨이",
+  "s": "양식",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2020-00093": {
   "s": "기타",
   "star": false,
   "x": true
+ },
+ "m-mushshn426d": {
+  "a": ".",
+  "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "갈비꽃",
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2019-00091": {
+  "c": true,
+  "h": false,
+  "s": "육류",
+  "star": true,
+  "x": false
  },
  "5640000-101-2010-00078": {
   "s": "밥류",
@@ -154,12 +307,33 @@
   "s": "탕류",
   "star": false
  },
+ "5640000-101-2001-00146": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2009-00129": {
   "c": true,
   "h": false,
   "s": "밥류",
   "star": true,
   "x": false
+ },
+ "5640000-101-1997-00132": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2011-00056": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2009-00166": {
   "s": "중식",
@@ -174,6 +348,13 @@
   "s": "기타",
   "star": true
  },
+ "5640000-101-2013-00002": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2012-00262": {
   "c": false,
   "h": false,
@@ -184,6 +365,13 @@
  "5640000-101-2018-00213": {
   "s": "탕류",
   "star": false
+ },
+ "5640000-101-2011-00107": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2016-00083": {
   "c": true,
@@ -211,16 +399,75 @@
   "s": "육류",
   "star": false
  },
+ "5640000-101-2010-00023": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2007-00185": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2019-00099": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
  "5640000-101-2010-00040": {
   "s": "기타",
   "star": true
  },
- "5640000-101-2008-00243": {
+ "5640000-101-2019-00264": {
+  "c": false,
+  "h": false,
+  "s": "세계음식",
+  "star": true,
+  "x": false
+ },
+ "m-musi07k9m5f": {
+  "a": "",
+  "c": false,
+  "dg": "죽전동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "9.4닭갈비",
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2018-00260": {
   "c": false,
   "h": false,
   "s": "육류",
   "star": true,
   "x": false
+ },
+ "m-mushtw0a0tq": {
+  "a": ".",
+  "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "노브랜드",
+  "s": "양식",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2016-00167": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2011-00068": {
   "c": false,
@@ -237,9 +484,23 @@
   "s": "밥류",
   "star": false
  },
+ "5640000-101-2017-00045": {
+  "c": true,
+  "h": false,
+  "s": "탕류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2010-00171": {
   "s": "육류",
   "star": false
+ },
+ "5640000-101-2025-00056": {
+  "c": true,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
  },
  "5640000-101-2014-00070": {
   "s": "육류",
@@ -271,10 +532,38 @@
   "star": true,
   "x": false
  },
+ "5640000-101-2014-00235": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "5640000-101-2004-00799": {
+  "c": false,
+  "h": false,
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2001-00064": {
   "c": false,
   "h": false,
   "s": "면류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2008-00159": {
+  "c": false,
+  "h": false,
+  "s": "육류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2011-00021": {
+  "c": false,
+  "h": true,
+  "s": "기타",
   "star": true,
   "x": false
  },
@@ -283,16 +572,61 @@
   "star": true,
   "x": false
  },
+ "5640000-101-2006-00230": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "5640000-101-1999-00112": {
+  "c": true,
+  "h": false,
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2006-00043": {
   "s": "육류",
   "star": false
  },
  "5640000-101-2004-00683": {
+  "c": true,
+  "h": false,
   "s": "육류",
-  "star": false
+  "star": true,
+  "x": false
  },
  "5640000-101-2017-00236": {
   "s": "육류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2012-00162": {
+  "c": true,
+  "h": false,
+  "s": "탕류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2007-00004": {
+  "c": false,
+  "h": false,
+  "s": "면류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2019-00030": {
+  "c": false,
+  "h": false,
+  "s": "세계음식",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-1995-00154": {
+  "c": false,
+  "h": false,
+  "s": "면류",
   "star": false,
   "x": false
  },
@@ -303,16 +637,16 @@
   "star": true,
   "x": false
  },
+ "5640000-101-2009-00069": {
+  "c": true,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2005-00124": {
   "s": "육류",
   "star": false,
-  "x": false
- },
- "5640000-101-2001-00411": {
-  "c": false,
-  "h": false,
-  "s": "탕류",
-  "star": true,
   "x": false
  },
  "5640000-101-2017-00219": {
@@ -332,6 +666,20 @@
   "star": false,
   "x": true
  },
+ "5640000-101-2015-00227": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2026-00040": {
+  "c": false,
+  "h": true,
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2013-00037": {
   "c": false,
   "h": false,
@@ -339,43 +687,147 @@
   "star": true,
   "x": false
  },
+ "5640000-101-2010-00127": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "5640000-101-2019-00061": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
  "5640000-101-2011-00032": {
   "s": "중식",
   "star": false
+ },
+ "5640000-101-2011-00174": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2017-00141": {
   "s": "밥류",
   "star": false
  },
- "5640000-101-2000-00403": {
+ "m-mushu7evow9": {
+  "a": "",
   "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
   "h": false,
-  "s": "밥류",
+  "manual": true,
+  "n": "버거킹",
+  "s": "양식",
   "star": true,
   "x": false
+ },
+ "5640000-101-2015-00081": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2016-00186": {
   "s": "탕류",
   "star": false
  },
+ "5640000-101-2018-00214": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
  "5640000-101-2002-00502": {
   "s": "탕류",
   "star": false
+ },
+ "5640000-101-2020-00083": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2005-00628": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2014-00229": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "m-mushuce2fdz": {
+  "a": "",
+  "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "왁버거",
+  "s": "양식",
+  "star": true,
+  "x": false
  },
  "5640000-101-2019-00156": {
   "s": "탕류",
   "star": false,
   "x": false
  },
+ "5640000-101-2002-00509": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
  "5640000-101-2007-00098": {
+  "c": true,
+  "h": false,
   "s": "육류",
-  "star": false
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2022-00081": {
+  "c": true,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2011-00043": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2008-00070": {
+  "c": false,
+  "h": false,
+  "s": "중식",
+  "star": true,
+  "x": false
  },
  "5640000-101-2013-00038": {
   "c": false,
-  "h": true,
+  "h": false,
   "s": "육류",
-  "star": false,
+  "star": true,
   "x": false
  },
  "5640000-101-2011-00158": {
@@ -385,12 +837,31 @@
   "star": true,
   "x": false
  },
+ "m-mushvdd44yq": {
+  "a": "",
+  "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "보영만두",
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2014-00057": {
   "c": false,
   "h": false,
   "s": "육류",
   "star": true,
   "x": false
+ },
+ "5640000-101-2014-00076": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2009-00047": {
   "c": false,
@@ -406,6 +877,30 @@
   "star": true,
   "x": false
  },
+ "m-mushrvdjk8w": {
+  "a": ".",
+  "c": false,
+  "dg": "죽전동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "스파게티 샵",
+  "s": "양식",
+  "star": true,
+  "x": false
+ },
+ "m-mushr1nmqph": {
+  "a": "죽전로",
+  "c": true,
+  "dg": "죽전동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "투고박스누들 단국대점",
+  "s": "세계음식",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2015-00180": {
   "c": false,
   "h": false,
@@ -413,19 +908,122 @@
   "star": true,
   "x": false
  },
+ "5640000-101-2020-00035": {
+  "c": false,
+  "h": false,
+  "s": "육류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2026-00175": {
+  "c": true,
+  "h": true,
+  "s": "밥류",
+  "star": true,
+  "x": true
+ },
  "5640000-101-1996-00168": {
   "s": "육류",
   "star": false,
+  "x": false
+ },
+ "5640000-101-2007-00280": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "m-mushwaur28r": {
+  "a": "",
+  "c": false,
+  "dg": "풍덕천동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "떡창",
+  "s": "밥류",
+  "star": true,
   "x": false
  },
  "5640000-101-2001-00522": {
   "s": "탕류",
   "star": false
  },
+ "5640000-101-2010-00116": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
  "5640000-101-2017-00028": {
   "c": true,
   "h": false,
   "s": "일식",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2008-00018": {
+  "c": true,
+  "h": false,
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2003-00029": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2001-00413": {
+  "c": false,
+  "h": false,
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2026-00172": {
+  "c": false,
+  "h": true,
+  "s": "세계음식",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-1993-00107": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2015-00038": {
+  "c": false,
+  "h": false,
+  "s": "육류",
+  "star": false,
+  "x": false
+ },
+ "5640000-101-2016-00210": {
+  "c": false,
+  "h": false,
+  "s": "일식",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2015-00206": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2024-00095": {
+  "c": true,
+  "h": true,
+  "s": "기타",
   "star": true,
   "x": false
  },
@@ -436,6 +1034,20 @@
  "5640000-101-2010-00261": {
   "s": "육류",
   "star": false
+ },
+ "5640000-101-2009-00101": {
+  "c": true,
+  "h": false,
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2015-00078": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  },
  "5640000-101-2008-00028": {
   "c": false,
@@ -454,5 +1066,19 @@
   "s": "탕류",
   "star": true,
   "x": false
+ },
+ "5640000-101-2019-00143": {
+  "c": true,
+  "h": false,
+  "s": "육류",
+  "star": true,
+  "x": false
+ },
+ "5640000-101-2012-00227": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
  }
 }
