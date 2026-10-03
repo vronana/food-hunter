@@ -12,7 +12,7 @@ view=[];stars=[]
 for r in rows:
     e=ed.get(r['id'],{}); h=e['h'] if 'h' in e else e.get('s',r['s'])=='기타'
     if e.get('x'): continue
-    if h and not e.get('star'): continue
+    if h: continue
     r=dict(r); r['s']=e.get('s',r['s'])
     if 'c' in e: r['c']=bool(e['c'])
     view.append(r)

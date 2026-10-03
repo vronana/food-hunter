@@ -254,7 +254,10 @@ function h(tag, props, ...kids){
 }
 const CHAINRE=/점\)?\s*$/, NOTCHAIN=/(본점|반점|전문점|상점)\)?\s*$/;
 function chain0(r){ return r.c!==undefined ? !!r.c : (CHAINRE.test(r.n) && !NOTCHAIN.test(r.n)); }
-function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:!!(o&&o.star), x:!!(o&&o.x), h:(o&&o.h!==undefined)?!!o.h:s==="기타", c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
+function loadFavs(){ try{ const v=JSON.parse(localStorage.getItem("fh-fav")||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
+const FAV=new Set(loadFavs());
+function toggleFav(id){ if(FAV.has(id)) FAV.delete(id); else FAV.add(id); try{ localStorage.setItem("fh-fav",JSON.stringify([...FAV])); }catch(e){} render(); }
+function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:FAV.has(r.id), x:!!(o&&o.x), h:(o&&o.h!==undefined)?!!o.h:s==="기타", c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
 function label(k){ const c=CATS.find(x=>x.k===k); return c&&c.label?c.label:k; }
 function mapUrl(r){ return "https://map.naver.com/p/search/"+encodeURIComponent("수지구 "+r.n); }
 function allItems(){ return DATA.map(r=>{const c=cur(r);return {r,s:c.s,star:c.star,x:c.x,h:c.h,c:c.c};}); }
@@ -300,7 +303,7 @@ function commit(id,next,prev){
   pending++; paintSave();
   const p=(commit.chain.get(id)||Promise.resolve()).then(async()=>{
     const ref=db.doc("edits/"+id);
-    if(next.s===r.s && !next.star && !next.x && !!next.h===(next.s==="기타") && !!next.c===chain0(r)) await ref.delete(); else await ref.set({s:next.s,star:next.star,x:!!next.x,h:!!next.h,c:!!next.c});
+    if(next.s===r.s && !next.x && !!next.h===(next.s==="기타") && !!next.c===chain0(r)) await ref.delete(); else await ref.set({s:next.s,star:false,x:!!next.x,h:!!next.h,c:!!next.c});
     pending--; lastSaved=new Date(); saveErr=false; paintSave();
   }).catch(e=>{
     pending--; saveErr=true;
@@ -316,8 +319,8 @@ commit.chain=new Map();
 function row(it,o){
   const r=it.r, lock=readOnly||!ready, isOpen=(S.open===r.id);
   const star=h("button",{className:"star",type:"button","aria-pressed":String(it.star),"aria-label":r.n+" 즐겨찾기",text:"★"});
-  star.disabled=STATIC||lock; if(STATIC && !it.star) star.style.visibility="hidden";
-  star.addEventListener("click",()=>setCat(r.id,{s:it.s,star:!it.star,x:it.x,h:it.h},"star"));
+  star.disabled=false;
+  star.addEventListener("click",()=>toggleFav(r.id));
   const nm=h("div",{className:"nm"}); nm.append(r.n);
   if(r.g) nm.append(h("span",{className:"badge",text:"모범"}));
   if(it.c) nm.append(h("span",{className:"badge chain",text:"체인"}));
@@ -405,7 +408,7 @@ function renderHome(all){
   const g3=h("div",{className:"grid"});
   
   const holdN=all.filter(i=>!i.x && i.h).length;
-  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",all.filter(i=>!i.x && i.star).length],["chain","체인점",vis.filter(i=>i.c).length],["hold","보류함",holdN]].filter(x=>STATIC ? (x[0]!=="hold" && (x[0]!=="fav"||x[2]>0)) : true).forEach(([k,t2,n])=>{
+  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",all.filter(i=>!i.x && i.star).length],["chain","체인점",vis.filter(i=>i.c).length],["hold","보류함",holdN]].filter(x=>(x[0]!=="fav"||x[2]>0) && (!STATIC||x[0]!=="hold")).forEach(([k,t2,n])=>{
     const b=h("button",{className:"sc",type:"button"},icon(k,34),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
   });
@@ -518,7 +521,7 @@ function pickFrom(pool){
     const t1=h("span",{className:"tag",text:label(it.s)}); paint(t1,it.s); tg.append(t1);
     if(r.g) tg.append(h("span",{className:"badge",text:"모범"}));
     if(it.c) tg.append(h("span",{className:"badge chain",text:"체인"}));
-    if(it.star) tg.append(h("span",{className:"badge",text:"★ 추천"}));
+    if(it.star) tg.append(h("span",{className:"badge",text:"★ 즐겨찾기"}));
     const again=h("button",{className:"pk-again",type:"button",text:"🎲 다시 뽑기"});
     again.addEventListener("click",()=>pickFrom(pool));
     const more=h("div",{className:"pk-more"},tg,
@@ -569,7 +572,6 @@ $("dongsel").addEventListener("change",e=>{ S.dong=e.target.value; render(); });
 $("sortsel").addEventListener("change",e=>{ S.sort=e.target.value; render(); });
 $("gbtn").addEventListener("click",()=>{ S.onlyG=!S.onlyG; render(); });
 $("cbtn").addEventListener("click",()=>{ S.onlyC=!S.onlyC; render(); });
-if(STATIC) STARS_BAKED.forEach(id=>{ if(byId.has(id)) ov.set(id,{s:byId.get(id).s,star:true,x:false,h:false}); });
 (function(){ const d=new Date(); $("eyebrow").hidden=true; paint($("home"),"x"); })();
 render();
 
@@ -593,6 +595,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v2.2</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v3.0</p></div>
 </body>
 </html>
