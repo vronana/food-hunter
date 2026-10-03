@@ -30,12 +30,12 @@ HEAD='''<meta name="theme-color" content="#f7f5f2">
 <meta property="og:title" content="오늘 뭐먹지">
 <meta property="og:description" content="오늘 뭐 먹지? 고민되면 뽑기로 정해 보세요.">
 <meta property="og:url" content="https://vronana.github.io/food-hunter/">
-<meta property="og:image" content="https://vronana.github.io/food-hunter/icons/icon-512.png">
+<meta property="og:image" content="https://vronana.github.io/food-hunter/icons/icon-512.png?v=22">
 <meta property="og:locale" content="ko_KR">
 <meta name="description" content="오늘 뭐 먹지? 고민되면 뽑기로 정해 보세요.">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest?v=22">
+<link rel="icon" type="image/png" href="icons/icon-192.png?v=22">
+<link rel="apple-touch-icon" href="icons/icon-180.png?v=22">
 '''
 idx=make(view,'true',stars).replace('<meta name="color-scheme" content="light">\n','<meta name="color-scheme" content="light">\n'+HEAD,1)
 open(f'{here}/index.html','w').write(idx)
