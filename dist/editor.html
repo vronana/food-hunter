@@ -414,7 +414,7 @@ function groupsHold(items,o){
   [4,3,2,1,0,-1].forEach(y=>{
     const g=items.filter(i=>(i.r.y===undefined?-1:i.r.y)===y); if(!g.length) return;
     const open=HOLDOPEN.has(y);
-    const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon("hold",30),h("span",{className:"scl",text:y<0?"5년 이상 · 분류 대기":y+"년차"}),h("span",{className:"scn",text:g.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
+    const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon("hold",30),h("span",{className:"scl",text:y<0?"요리주점":y+"년차"}),h("span",{className:"scn",text:g.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
     cap.addEventListener("click",()=>{ if(HOLDOPEN.has(y)) HOLDOPEN.delete(y); else HOLDOPEN.add(y); render(); });
     frag.append(cap);
     if(open){ const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o))); frag.append(card); }
@@ -676,6 +676,6 @@ render();
 })();
 </script>
 
-<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.2</p></div>
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v4.3</p></div>
 </body>
 </html>
