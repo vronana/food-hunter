@@ -569,7 +569,7 @@ function renderList(all){
     const favs=(key==="fav"||key==="trash"||key==="hold")?[]:shown.filter(i=>i.star);
     const rest=shown.filter(i=>!favs.includes(i));
     const ngroups=(favs.length?1:0)+new Set(rest.map(i=>i.r.dg)).size;
-    const fold=ngroups>1 && key!=="hold";
+    const fold=false;
     const icn=ICONS[key]?key:"hold";
     if(favs.length){
       if(fold) frag.append(foldCard(key+"|fav","fav","★ 즐겨찾기",favs,{tag:mixed}));
