@@ -24,9 +24,18 @@ CAFE_ICON=("<svg viewBox='0 0 64 64' aria-hidden='true'>"
  "<circle cx='17.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/><circle cx='38.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/>"
  "</svg>")
 
+BREAD_ICON=("<svg viewBox='0 0 64 64' aria-hidden='true'>"
+ "<path d='M10 34c0-12 10-20 22-20s22 8 22 20c0 3-2 5-5 5H15c-3 0-5-2-5-5z' fill='#e0a458'/>"
+ "<path d='M12 38h40v8c0 5-4 8-9 8H21c-5 0-9-3-9-8z' fill='#c9893a'/>"
+ "<path d='M24 20l4 8M34 18l3 9M44 22l2 7' stroke='#f6dcae' stroke-width='3' stroke-linecap='round' fill='none'/>"
+ "<circle cx='25' cy='42' r='2.1' fill='#4a3b32'/><circle cx='39' cy='42' r='2.1' fill='#4a3b32'/>"
+ "<path d='M29 46Q32 49.5 35 46' stroke='#4a3b32' stroke-width='1.9' stroke-linecap='round' fill='none'/>"
+ "<circle cx='20' cy='46' r='2.6' fill='#ff8f7a' opacity='.55'/><circle cx='44' cy='46' r='2.6' fill='#ff8f7a' opacity='.55'/>"
+ "</svg>")
+
 EXTRA_CSS="""/* 운중동 전용 */
 .pills .selw:first-child{display:none}
-.pb-chars{grid-template-columns:repeat(9,minmax(0,1fr))}
+.pb-chars{grid-template-columns:repeat(10,minmax(0,1fr))}
 .grid .cc:last-child:nth-child(odd){grid-column:1/-1}
 """
 
@@ -34,12 +43,12 @@ EXTRA_CSS="""/* 운중동 전용 */
 CHARS_OLD='["육류","탕류","밥류","면류","중식","일식","양식","세계음식"].forEach('
 PATCHES=[
  ('<span class="region">수지구</span>','<span class="region">운중동</span>',1),
- ('{k:"세계음식",label:"세계식"},{k:"기타",label:"분류 안 됨"}','{k:"세계음식",label:"세계식"},{k:"카페"},{k:"기타",label:"분류 안 됨"}',1),
+ ('{k:"세계음식",label:"세계식"},{k:"기타",label:"분류 안 됨"}','{k:"세계음식",label:"세계식"},{k:"카페"},{k:"베이커리"},{k:"기타",label:"분류 안 됨"}',1),
  ('const DONGS = ["풍덕천동","죽전동","동천동","상현동","성복동","신봉동","고기동"];','const DONGS = ["운중동"];',1),
- ('"세계음식":["#e8b100","#fff1c2"],"기타":','"세계음식":["#e8b100","#fff1c2"],"카페":["#b5764a","#f4e3d3"],"기타":',1),
- ('const ICONS = {"chain":','const ICONS = {"카페": "'+CAFE_ICON+'", "chain":',1),
- ('["중식","일식","양식","세계음식"].forEach(k=>g2.append(card(k)))','["중식","일식","양식","세계음식","카페"].forEach(k=>g2.append(card(k)))',1),
- (CHARS_OLD,'["육류","탕류","밥류","면류","중식","일식","양식","세계음식","카페"].forEach(',2),
+ ('"세계음식":["#e8b100","#fff1c2"],"기타":','"세계음식":["#e8b100","#fff1c2"],"카페":["#b5764a","#f4e3d3"],"베이커리":["#c9893a","#fbeccd"],"기타":',1),
+ ('const ICONS = {"chain":','const ICONS = {"카페": "'+CAFE_ICON+'", "베이커리": "'+BREAD_ICON+'", "chain":',1),
+ ('["중식","일식","양식","세계음식"].forEach(k=>g2.append(card(k)))','["중식","일식","양식","세계음식","카페","베이커리"].forEach(k=>g2.append(card(k)))',1),
+ (CHARS_OLD,'["육류","탕류","밥류","면류","중식","일식","양식","세계음식","카페","베이커리"].forEach(',2),
  ('encodeURIComponent("수지구 "+r.n)','encodeURIComponent("운중동 "+r.n)',1),
  ('const REGION="suji";','const REGION="unjung";',1),
  # 보류함: 분류 대기(기타) / 범위 밖(hg=1) / 요리주점(hg=2)
@@ -51,7 +60,7 @@ PATCHES=[
  ('text:Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가"','text:(r.m>0?Math.round(r.m)+"㎡ · ":"")+r.d.slice(0,4)+"년 허가"',1),
  ('(r.d?Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가":','(r.d?(r.m>0?Math.round(r.m)+"㎡ · ":"")+r.d.slice(0,4)+"년 허가":',1),
  # 직접 추가할 때 이름에 카페/커피 등이 있으면 카페로 자동 분류
- ('const t=(re)=>re.test(n);','const t=(re)=>re.test(n);\n  if(t(/카페|커피|베이커리|디저트|케이크|제과/)) return "카페";',1),
+ ('const t=(re)=>re.test(n);','const t=(re)=>re.test(n);\n  if(t(/베이커리|빵|브레드|제과|케이크|디저트|쿠키|스콘|도넛|꽈배기|젤라또|마카롱/)) return "베이커리";\n  if(t(/카페|커피/)) return "카페";',1),
  ('</style>',EXTRA_CSS+'</style>',1),
 ]
 for old,new,cnt in PATCHES:

@@ -3,7 +3,7 @@
 사용: python3 tools/make_unjung.py 일반음식점.csv 휴게음식점.csv
 - 영업 중인 운중동 가게만 (연차·면적 제한 없음)
 - 술집·편의점·푸드트럭·PC방은 뺌
-- 카페는 한 칸. 디저트집도 카페.
+- 카페(커피·차)와 베이커리(빵·디저트)는 따로.
 - 보류함: 이름으로 분류 못 한 곳(기타), 요리주점, 지도 범위 밖(hg=1). hg=2 는 요리주점.
 """
 import sys,re,json,os,collections
@@ -39,6 +39,9 @@ PUB_TYPES={'호프/통닭','정종/대포집/소주방','라이브카페'}  # �
 REST_FIX={'삼동소바 판교점':'일식','써브웨이 서판교점':'양식','만두전골과칼국수미가온':'탕류','새쟁이꽈배기':'카페','짱구네떡볶이':'밥류',
  '팔복 황제누룽지탕':'탕류','피자스쿨(판교산운마을점)':'양식','맥도날드 서판교DT점':'양식','프랭크버거 서판교점':'양식','샐러디 서판교점':'양식',
  '이삭토스트 성남서판교점':'밥류','리얼케익 서판교점':'카페','파파젤라또':'카페','배스킨라빈스 판교운중점':'카페'}
+# 빵·디저트집 -> 베이커리 (이름으로 추측, 틀리면 편집기에서 고침)
+BAKERY=set(DESSERT)|{'퍼프','새쟁이꽈배기','리얼케익 서판교점','파파젤라또','배스킨라빈스 판교운중점','카페투브레드',
+ '스크루지라이크스콘(SCROOGE LIKES SCONE)','비스위트'}
 REST_HOLD={'라이트하우스(Light House)','라일락 향기','장모집','로이맘도라지가게 분당2호점','보돌미역블랙 판교운중점'}
 
 def cat_general(n,t):
@@ -72,6 +75,7 @@ def load(path,fn):
 
 def main(gen,rest,out):
     d=pd.concat([load(gen,kind_general),load(rest,kind_rest)])
+    d['kind']=['베이커리' if n in BAKERY and k=='카페' else k for n,k in zip(d['사업장명'],d['kind'])]
     d=d.drop_duplicates('사업장명')          # 두 파일에 다 있는 가게는 한 곳으로
     d=d[~d['kind'].isin(['술집','제외'])]
     d['x']=pd.to_numeric(d['좌표정보(X)'],errors='coerce'); d['y']=pd.to_numeric(d['좌표정보(Y)'],errors='coerce')
