@@ -75,6 +75,11 @@ for old,new,cnt in PATCHES:
     if n!=cnt: sys.exit(f'패치가 원본과 안 맞아요 (원본에 {n}곳, 기대 {cnt}곳): {old[:70]}')
     src=src.replace(old,new)
 
+# 캐릭터 볼터치(빨간 점 두 개) 삭제 - 운중동만
+import re
+src,_n=re.subn(r'<circle[^>]*#ff8f7a[^>]*/>','',src)
+print('볼터치 삭제',_n)
+
 view=[];stars=[]
 extra=[dict(id=k,n=e['n'],a=e.get('a',''),dg=e['dg'],m=0,d='',s=e.get('s','기타'),g=1 if e.get('g') else 0,f='',manual=1) for k,e in ed.items() if e.get('manual') and e.get('n') and e.get('dg')]
 for r in rows+extra:
