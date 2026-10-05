@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#f7f5f2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="뭐먹지 운중">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="오늘 뭐먹지">
+<meta property="og:title" content="오늘 뭐먹지">
+<meta property="og:description" content="오늘 뭐 먹지? 고민되면 뽑기로 정해 보세요.">
+<meta property="og:url" content="https://vronana.github.io/food-hunter/unjung/">
+<meta property="og:image" content="https://vronana.github.io/food-hunter/icons/icon-512.png?v=22">
+<meta property="og:locale" content="ko_KR">
+<meta name="description" content="오늘 뭐 먹지? 고민되면 뽑기로 정해 보세요.">
+<link rel="manifest" href="manifest.webmanifest?v=23">
+<link rel="icon" type="image/png" href="../icons/icon-192.png?v=22">
+<link rel="apple-touch-icon" href="../icons/icon-180.png?v=22">
+<title>오늘 뭐먹지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+/* Layout: quiet Apple-style screens in warm neutrals. Home = date, big question, search, white category cards. List = grouped inset lists by neighborhood. One accent color, one typeface (Jua). One light theme on purpose. */
+:root{
+  --bg:#f7f5f2; --paper:#ffffff; --ink:#2b2622; --muted:#8b8279; --line:#eee9e3; --fill:#efebe5;
+  --accent:#d9622b; --accent-soft:#fdeee4; --accent-fg:#ffffff; --danger:#c8403a;
+  --shadow:0 1px 2px rgba(70,50,30,.05),0 6px 20px rgba(70,50,30,.06);
+  --font:"Jua","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  color-scheme:only light;
+}
+*{box-sizing:border-box}
+html{font-synthesis:none}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:400;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,b,strong{font-weight:400}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 96px}
+button,select,input{font:inherit;font-weight:400}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;margin-inline:-16px;padding:8px 16px;min-height:52px;background:rgba(247,245,242,.85);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);display:flex;align-items:center;gap:10px}
+.back{border:0;background:none;color:var(--accent);font-size:1.05rem;cursor:pointer;padding:6px 6px 6px 0;display:flex;align-items:center;gap:4px}
+.back::before{content:"";width:9px;height:9px;border-left:2.2px solid currentColor;border-bottom:2.2px solid currentColor;transform:rotate(45deg);margin-right:3px}
+.spacer{flex:1}
+.save{font-size:.85rem;color:var(--muted);white-space:nowrap}
+.save.err{color:var(--danger)}
+.editbtn{border:0;border-radius:999px;background:var(--fill);color:var(--ink);font-size:.92rem;padding:7px 15px;cursor:pointer}
+.editbtn[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.tbtn{border:0;background:none;color:var(--muted);display:inline-flex;align-items:center;gap:4px;padding:6px 8px;border-radius:10px;cursor:pointer;font-size:.9rem}
+.tbtn:hover{background:var(--fill);color:var(--ink)}
+.tbtn .ic{--s:22px}
+.ic{display:inline-flex;width:var(--s,44px);height:var(--s,44px);flex:none}
+.ic svg{width:100%;height:100%}
+.ic.line{color:var(--muted)}
+.lhead{display:flex;align-items:center;gap:12px}
+
+.top.slim{min-height:0;padding-block:0;height:0;overflow:visible}
+.hero{padding-block:18px 4px;position:relative}
+.region{position:absolute;right:2px;top:20px;font-size:.92rem;color:var(--muted);background:var(--fill);padding:5px 12px;border-radius:999px}
+.top.slim + * .hero, .top.slim ~ * .hero{padding-block:max(18px,env(safe-area-inset-top,0px)) 4px}
+.eyebrow{margin:0 0 8px;color:var(--muted);font-size:1rem}
+h1{font-size:2.6rem;line-height:1.18;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.mark{color:var(--accent)}
+.hero h1{line-height:1}
+.hero .sub{margin-top:0;line-height:1.1}
+.sub{margin:10px 0 0;color:var(--muted);font-size:1rem}
+.search{position:relative;margin-block:22px 4px}
+.search input{width:100%;border:0;background:var(--fill);color:var(--ink);font-size:1.05rem;padding:14px 16px 14px 44px;border-radius:14px}
+.search input::placeholder{color:var(--muted);opacity:.55}
+.search::before{content:"";position:absolute;left:17px;top:50%;width:11px;height:11px;border:2px solid var(--muted);border-radius:50%;transform:translateY(-62%)}
+.search::after{content:"";position:absolute;left:27px;top:calc(50% + 5px);width:7px;height:2px;background:var(--muted);transform:rotate(45deg);border-radius:2px}
+
+.lab{margin:34px 0 12px;padding-inline:4px;font-size:.95rem;color:var(--muted)}
+.lab:empty{display:none}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.grid.one{grid-template-columns:1fr}
+.cc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:18px 8px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;transition:transform .15s}
+.cc:hover{transform:translateY(-2px)}
+.cc:active{transform:scale(.98)}
+.cn{font-size:1.5rem;line-height:1.25;white-space:nowrap}
+@media(max-width:360px){.sc{padding:12px 10px;column-gap:6px}.sc .scl{font-size:1rem}.cn{font-size:1.3rem}.sc .scl{font-size:1rem}}
+.cm{font-size:.95rem;color:var(--muted)}
+.sc{border:0;text-align:left;background:var(--paper);color:var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:center;min-width:0}
+.trashlink{margin-top:26px;width:100%}
+.addbtn{width:100%;margin-top:14px;border:2px dashed #e3cdb4;background:transparent;color:var(--accent);border-radius:16px;padding:13px;font:inherit;font-size:1.02rem;cursor:pointer}
+.addform{margin-top:12px;background:var(--paper);border-radius:20px;box-shadow:var(--shadow);padding:14px;display:grid;gap:10px}
+.addform input[type=text],.addform select{width:100%;border:0;background:var(--fill);color:var(--ink);font:inherit;font-size:1.02rem;padding:12px 14px;border-radius:12px}
+.addform .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.addform .chk{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:1rem}
+.addform .chk input{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:0;border:2px solid #cdbfb2;border-radius:7px;background:#fff;display:grid;place-content:center;cursor:pointer;flex:none}
+.addform .chk input::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px);opacity:0}
+.addform .chk input:checked{background:var(--accent);border-color:var(--accent)}
+.addform .chk input:checked::after{opacity:1}
+.addform .pbtn{padding:12px;border-radius:12px}
+.yrcard{width:100%;margin-top:12px}
+.yrcard+.card{margin-top:8px}
+.sc .ic{grid-row:1/3}
+.sc .scl{font-size:1.15rem;align-self:end;white-space:nowrap}
+.sc .scn{align-self:start;color:var(--muted);font-size:.95rem}
+.todo{margin-top:30px;border-radius:20px;background:var(--paper);box-shadow:var(--shadow);padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.todo p{margin:0;font-size:1.1rem}
+.todo small{display:block;color:var(--muted);font-size:.9rem;margin-top:2px}
+.todo button{border:0;border-radius:999px;background:var(--accent-soft);color:var(--accent);padding:9px 18px;cursor:pointer}
+.link{margin-top:24px;border:0;background:none;color:var(--muted);font-size:.92rem;cursor:pointer;padding:6px 4px}
+.link:hover{color:var(--ink)}
+
+.lh{padding-block:20px 0}
+.lh h1{font-size:2.4rem}
+.lh .sub{margin-top:6px}
+.pills{display:flex;flex-wrap:nowrap;gap:6px;margin-block:16px 2px}
+.pills .selw{flex:1 1 0;min-width:0;display:block}
+.pills select.pill{width:100%;text-overflow:ellipsis;font-size:.9rem;padding:8px 22px 8px 11px}
+.pills .selw::after{right:10px}
+@media (max-width:360px){.pills{gap:4px}.pills select.pill{font-size:.8rem;padding:8px 16px 8px 8px}.pills .selw::after{right:6px}}
+.selw{position:relative;display:inline-block}
+.selw::after{content:"";position:absolute;right:13px;top:50%;width:5px;height:5px;border-right:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:translateY(-70%) rotate(45deg);pointer-events:none;color:var(--muted)}
+.pill{appearance:none;-webkit-appearance:none;border:0;background:var(--fill);color:var(--ink);font-size:.95rem;padding:8px 32px 8px 15px;border-radius:999px;cursor:pointer}
+button.pill{padding:8px 15px}
+button.pill[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.banner{margin-top:14px;padding:12px 16px;border-radius:14px;background:var(--fill);color:var(--muted);font-size:.95rem}
+.notice{margin-top:14px;padding:12px 16px;border-radius:14px;background:var(--fill);color:var(--muted);font-size:.95rem}
+
+.cap{margin:26px 0 8px;padding-inline:6px;display:flex;align-items:baseline;gap:8px;color:var(--muted);font-size:.95rem}
+.cap b{color:var(--ink)}
+.card{background:var(--paper);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"star info ctl" ". panel panel";gap:4px 8px;align-items:center;padding:13px 14px 13px 6px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.star{grid-area:star;font-size:1.3rem;line-height:1;border:0;background:none;color:#ddd6cd;cursor:pointer;padding:8px;border-radius:8px}
+.star[aria-pressed="true"]{color:var(--accent)}
+.star:hover{color:var(--accent)}
+.star:disabled{cursor:default}
+.info{grid-area:info;min-width:0}
+.nm{font-size:1.08rem;display:flex;flex-wrap:wrap;align-items:center;gap:6px;overflow-wrap:anywhere}
+.badge{font-size:.75rem;color:var(--accent);background:var(--accent-soft);padding:1px 9px;border-radius:999px;white-space:nowrap}
+.tag{font-size:.75rem;color:var(--muted);background:var(--fill);padding:1px 9px;border-radius:999px;white-space:nowrap}
+.meta,.menu{color:var(--muted);font-size:.88rem;overflow-wrap:anywhere}
+.info.tap{cursor:pointer;border-radius:10px}
+.item.open{background:var(--fill)}
+.panel{grid-area:panel;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 0 4px}
+.pbtn{font-size:.92rem;border:0;border-radius:999px;background:var(--paper);color:var(--ink);padding:7px 15px;cursor:pointer;box-shadow:0 0 0 1px var(--line)}
+.pbtn.main{background:var(--accent-soft);color:var(--accent);box-shadow:none}
+.pbtn.del{color:var(--danger);margin-left:0}
+.pbtn.del.armed{background:var(--danger);color:#fff}
+.pbtn:disabled{opacity:.5;cursor:default}
+.ctl{grid-area:ctl;display:flex;align-items:center;gap:6px}
+.cat{appearance:none;-webkit-appearance:none;font-size:.92rem;border:0;background:var(--fill);color:var(--ink);padding:7px 28px 7px 13px;border-radius:999px;cursor:pointer;max-width:9.5em}
+.cat:disabled{cursor:default;opacity:.7}
+.ctl .selw::after{right:11px}
+.map{font-size:.88rem;color:var(--accent);text-decoration:none;padding:6px;white-space:nowrap}
+.map:hover{text-decoration:underline}
+.del,.restore{font-size:.88rem;border:0;background:none;cursor:pointer;padding:6px;border-radius:8px;white-space:nowrap}
+.del{color:var(--danger);margin-left:8px}
+.del.armed{background:var(--danger);color:#fff;padding-inline:10px}
+.restore{color:var(--accent)}
+.del:disabled,.restore:disabled{opacity:.5;cursor:default}
+.backupw{margin-top:34px;text-align:center}
+.backup{border:0;background:none;color:var(--muted);font-size:.9rem;padding:8px 14px;border-radius:999px;cursor:pointer}
+.backup:hover{background:var(--fill);color:var(--ink)}
+.badge.chain{color:#4a63c9;background:#e8edff}
+.badge.link{color:#b4580f;background:#ffe9d2}
+.pickbtn{margin-top:16px;width:100%;border:0;border-radius:16px;background:var(--accent);color:var(--accent-fg);font-size:1.15rem;padding:15px 18px;cursor:pointer;box-shadow:0 6px 18px rgba(217,98,43,.22)}
+.pickbtn.rich{padding:14px 14px 13px;text-align:center}
+.pb-chars{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;max-width:340px;margin:0 auto 10px}
+.pb-chars.one{grid-template-columns:1fr;max-width:44px}
+.pb-ch{display:flex;justify-content:center;min-width:0;animation:bob 1.6s ease-in-out infinite;animation-delay:var(--d,0s)}
+.pb-ch .ic{width:100%;height:auto;aspect-ratio:1;max-width:38px;background:rgba(255,255,255,.92);border-radius:50%;padding:2px;box-sizing:border-box}
+.pb-main{font-size:1.7rem;line-height:1.25;display:flex;align-items:center;justify-content:center;gap:10px}
+.dice{display:inline-block}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.pb-ch{animation:none}}
+.listpick{margin-top:6px;margin-bottom:4px}
+.pickbtn:active{transform:scale(.98)}
+.pickov{position:fixed;inset:0;z-index:40;background:rgba(43,38,34,.35);display:flex;align-items:flex-end;justify-content:center}
+.picksheet{width:100%;max-width:560px;background:var(--paper);border-radius:26px 26px 0 0;padding:26px 22px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(43,38,34,.18)}
+.pk-top{display:flex;align-items:center;gap:12px;margin-bottom:6px;min-height:64px}
+.pk-ico{flex:none}
+.pk-chars{display:flex;justify-content:space-between;gap:2px;margin:0 0 12px}
+.pk-ch{flex:1;display:flex;justify-content:center;opacity:.4;transform:scale(.88);transition:opacity .08s,transform .08s}
+.pk-ch.on{opacity:1;transform:scale(1.3)}
+.pk-ch .ic{--s:34px}
+@media (max-width:380px){.pk-ch .ic{--s:28px}}
+@media (prefers-reduced-motion:reduce){.pk-ch{transition:none}}
+.pk-hint{color:var(--muted);text-align:center;padding:14px 0 18px;font-size:1rem}
+.pk-more{animation:fadeup .35s ease both}
+.pk-name.tick{animation:tick .09s ease-out}
+.pk-name.pop{animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes tick{from{opacity:.4;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.85)}to{transform:scale(1)}}
+@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pk-name.tick,.pk-name.pop,.pk-more{animation:none}}
+.pk-top .ic{--s:56px}
+.pk-name{font-size:1.7rem;line-height:1.25;overflow-wrap:anywhere}
+.pk-meta{color:var(--muted);font-size:.95rem;margin:2px 0}
+.pk-tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.pk-act{display:flex;gap:10px;margin-top:20px}
+.pk-act a,.pk-act button{flex:1;text-align:center;text-decoration:none;border:0;border-radius:14px;font-size:1.05rem;padding:13px 10px;cursor:pointer}
+.pk-map{background:var(--accent);color:var(--accent-fg)}
+.pk-again{background:var(--accent-soft);color:var(--accent)}
+.pk-close{display:block;width:100%;margin-top:10px;border:0;background:none;color:var(--muted);padding:10px;font-size:.95rem;cursor:pointer}
+.ver{margin:0;padding:10px 0 34px;text-align:center;color:var(--muted);font-size:.8rem}
+.empty{padding:56px 0;text-align:center;color:var(--muted)}
+[hidden]{display:none!important}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:#fff;padding:11px 14px 11px 18px;border-radius:999px;box-shadow:0 8px 28px rgba(43,38,34,.25);display:flex;gap:14px;align-items:center;font-size:.95rem;width:max-content;max-width:calc(100vw - 32px)}
+.toast button{white-space:nowrap;flex:none;color:#fff;background:var(--accent);border:0;border-radius:999px;padding:5px 13px;cursor:pointer}
+footer{margin-top:44px;color:var(--muted);font-size:.85rem;max-width:60ch}
+@media (max-width:560px){
+  h1{font-size:2.15rem}
+  .lh h1{font-size:2rem}
+}
+@media (prefers-reduced-motion:reduce){.cc{transition:none}}
+/* 운중동 전용 */
+.pills .selw:first-child{display:none}
+.pb-chars{grid-template-columns:repeat(9,minmax(0,1fr))}
+.grid .cc:last-child:nth-child(odd){grid-column:1/-1}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button type="button" class="back" id="back" hidden>홈</button>
+    <span class="spacer"></span>
+    <span class="save" id="save" aria-live="polite"></span>
+    <button type="button" class="tbtn" id="trashbtn" aria-label="삭제함" title="삭제함" hidden><span id="trashic" class="ic"></span><span id="trashn"></span></button>
+  </div>
+
+  <section id="home">
+    <div class="hero">
+      <span class="region">운중동</span>
+      <p class="eyebrow" id="eyebrow"></p>
+      <h1>오늘 <span class="mark">뭐먹지?</span></h1>
+      <p class="sub" id="sub"></p>
+      <button type="button" class="pickbtn rich" id="pickhome" aria-label="오늘 뭐 먹을지 뽑기"></button>
+      <div class="search"><input id="q" type="search" placeholder="가게 이름·동네·음식 검색" autocomplete="off" enterkeyhint="search" aria-label="가게 검색"></div>
+    </div>
+    <div id="homebody"></div>
+  </section>
+
+  <section id="listview" hidden>
+    <div class="lh"><div class="lhead"><span id="lic"></span><h1 id="lt"></h1></div><p class="sub" id="ls"></p></div>
+    <p class="banner" id="banner" hidden></p>
+    <p class="notice" id="notice" hidden></p>
+    <button type="button" class="pickbtn rich listpick" id="pickbtn2"></button>
+    <div class="pills" id="pills">
+      <span class="selw"><select class="pill" id="dongsel" aria-label="동네"></select></span>
+      <span class="selw"><select class="pill" id="kindsel" aria-label="가게 종류"></select></span>
+      <span class="selw"><select class="pill" id="sortsel" aria-label="정렬">
+        <option value="name">이름순</option><option value="old">오래된 순</option><option value="big">넓은 순</option>
+      </select></span>
+    </div>
+    <button type="button" class="addbtn" id="addbtn" hidden>+ 가게 직접 추가</button>
+    <form class="addform" id="addform" hidden autocomplete="off">
+      <input id="an" type="text" maxlength="60" placeholder="가게 이름 (필수)" aria-label="가게 이름">
+      <div class="two">
+        <select id="adg" aria-label="동네"></select>
+        <select id="asel" aria-label="카테고리"></select>
+      </div>
+      <input id="aa" type="text" maxlength="120" placeholder="주소 (선택) 예: 포은대로 536" aria-label="주소">
+      <label class="chk"><input id="ag" type="checkbox"> 모범음식점이에요</label>
+      <label class="chk"><input id="astar" type="checkbox"> ★ 즐겨찾기로 추가</label>
+      <div class="two"><button type="submit" class="pbtn main">추가</button><button type="button" class="pbtn" id="acancel">닫기</button></div>
+    </form>
+    <div id="listbody"></div>
+  </section>
+</div>
+
+<div class="pickov" id="pickov" hidden><div class="picksheet" role="dialog" aria-modal="true" aria-label="뽑기 결과"><div id="pickbody"></div></div></div>
+<div class="toast" id="toast" hidden role="status"><span id="toastmsg"></span><button type="button" id="undo">되돌리기</button></div>
+
+<script>
+const DATA = [{"id": "3810000-101-2011-00065", "n": "본죽앤비빔밥카페서판교점", "a": "운중로 140, 메트로골드 1층 102호 일부, 103호", "dg": "운중동", "m": 55.7, "d": "2011-03", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2020-00121", "n": "쇼우민", "a": "운중로125번길 14-10, 1층 일부호", "dg": "운중동", "m": 30.0, "d": "2020-05", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2018-00081", "n": "명백집 서판교점", "a": "산운로160번길 12, 1(일부)층", "dg": "운중동", "m": 72.2, "d": "2018-04", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2010-00215", "n": "깐부치킨 판교산운마을점", "a": "운중로138번길 28-2", "dg": "운중동", "m": 58.8, "d": "2010-06", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2015-00163", "n": "세쯔야", "a": "운중로 129", "dg": "운중동", "m": 40.6, "d": "2015-05", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2024-00268", "n": "명륜진사갈비 성남서판교점", "a": "운중로178번길 1, 스타식스 로데오 1층 102호,103호,104호,105호", "dg": "운중동", "m": 166.1, "d": "2024-06", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2019-00007", "n": "운중동멸치국수", "a": "운중로125번길 5, 1층 일부호", "dg": "운중동", "m": 31.0, "d": "2019-01", "s": "면류", "g": 0, "f": ""}, {"id": "3810000-101-2020-00168", "n": "길우동", "a": "운중로 123, 마크시티오렌지 1층 106호", "dg": "운중동", "m": 40.0, "d": "2020-06", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2024-00398", "n": "피크버거스테이크", "a": "운중로 131, 스타식스 메트로 1층 101호", "dg": "운중동", "m": 39.2, "d": "2024-09", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2026-00276", "n": "처갓집양념치킨서판교점", "a": "운중로 129, 1층 113호", "dg": "운중동", "m": 0.0, "d": "2026-08", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2014-00501", "n": "댓짱돈까스(서판교점)", "a": "운중로166번길 10, 1층 일부호", "dg": "운중동", "m": 81.8, "d": "2014-12", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2015-00431", "n": "봉황칼국수", "a": "운중로126번길 7, 1층", "dg": "운중동", "m": 114.3, "d": "2015-10", "s": "면류", "g": 0, "f": ""}, {"id": "3810000-101-2019-00052", "n": "도조커피", "a": "운중로126번길 6, 1층 일부호", "dg": "운중동", "m": 51.1, "d": "2019-03", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2024-00299", "n": "바닐라 브라운 Vanilla Brown", "a": "운중로125번길 14-15, 1층", "dg": "운중동", "m": 108.7, "d": "2024-07", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2024-00346", "n": "카페요아정 서판교점", "a": "운중로126번길 8, 1층 일부(101)호", "dg": "운중동", "m": 32.4, "d": "2024-08", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2023-00529", "n": "우대포 판교직영점", "a": "운중로 141, 1층 101 일부호", "dg": "운중동", "m": 189.1, "d": "2023-11", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2010-00412", "n": "판교초밥", "a": "운중로125번길 4-7", "dg": "운중동", "m": 43.5, "d": "2010-11", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2023-00580", "n": "브리즈카페", "a": "운중로138번길 31, 1층 일부(101)호", "dg": "운중동", "m": 63.1, "d": "2023-12", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2015-00045", "n": "우봉집 판교", "a": "운중로126번길 11", "dg": "운중동", "m": 125.8, "d": "2015-02", "s": "탕류", "g": 0, "f": ""}, {"id": "3810000-101-2012-00413", "n": "한스족발", "a": "운중로125번길 5", "dg": "운중동", "m": 31.5, "d": "2012-09", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2012-00136", "n": "감탄 서판교점", "a": "운중로138번길 37", "dg": "운중동", "m": 27.2, "d": "2012-04", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2021-00453", "n": "솥탐 판교운중점", "a": "운중로138번길 28-1, 1층", "dg": "운중동", "m": 125.5, "d": "2021-11", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2023-00526", "n": "정家닭칼국수", "a": "운중로 121, 1층 106 일부호, 107호", "dg": "운중동", "m": 61.6, "d": "2023-11", "s": "면류", "g": 0, "f": ""}, {"id": "3810000-101-2011-00122", "n": "개나리식당", "a": "운중로138번길 28-3", "dg": "운중동", "m": 121.1, "d": "2011-04", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2023-00437", "n": "종로계림닭도리탕 원조서판교점", "a": "운중로 135, 더원스퀘어 2층 201호", "dg": "운중동", "m": 63.0, "d": "2023-09", "s": "탕류", "g": 0, "f": ""}, {"id": "3810000-101-2012-00452", "n": "쿠로", "a": "운중로166번길 4-14", "dg": "운중동", "m": 105.3, "d": "2012-10", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2021-00441", "n": "Con noi(콘노이)", "a": "운중로138번길 24-1, 1층 일부(102호)호", "dg": "운중동", "m": 45.6, "d": "2021-11", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2023-00152", "n": "컴홈커피2", "a": "운중로125번길 14-9, 1층 일부(103)호", "dg": "운중동", "m": 43.3, "d": "2023-04", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2013-00439", "n": "고봉민김밥인판교운중점", "a": "운중로 122", "dg": "운중동", "m": 56.0, "d": "2013-11", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2022-00417", "n": "마라장룡 운중점", "a": "운중로125번길 4-9, 1층 일부(101)호", "dg": "운중동", "m": 63.1, "d": "2022-11", "s": "중식", "g": 0, "f": ""}, {"id": "3810000-101-2024-00276", "n": "디자인무아", "a": "운중로125번길 3-10, 1층 일부(102 일부)호", "dg": "운중동", "m": 30.6, "d": "2024-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2019-00329", "n": "옛날통닭", "a": "운중로 124, 1층 105호", "dg": "운중동", "m": 26.6, "d": "2019-10", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2023-00128", "n": "라홍방마라탕 서판교운중점", "a": "운중로 124, 마크시티블루 2층 204호", "dg": "운중동", "m": 73.9, "d": "2023-03", "s": "중식", "g": 0, "f": ""}, {"id": "3810000-101-2020-00330", "n": "올리브그릴", "a": "운중로146번길 15-3, 1층 일부호", "dg": "운중동", "m": 106.1, "d": "2020-09", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2011-00187", "n": "육향도 서판교직영점", "a": "운중로113번길 4-8", "dg": "운중동", "m": 101.7, "d": "2011-06", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2024-00483", "n": "혜선이", "a": "운중로 135, 더원스퀘어 1층 101, 102호", "dg": "운중동", "m": 48.1, "d": "2024-11", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2023-00331", "n": "프리힐리(Frihili)", "a": "운중로 142, 판교메디칼타워 1층 일부(108호)호", "dg": "운중동", "m": 35.7, "d": "2023-07", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2013-00200", "n": "퍼프", "a": "판교로25번길 8-3", "dg": "운중동", "m": 48.8, "d": "2013-05", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2024-00407", "n": "동해소바(현1978)", "a": "운중로126번길 6, 1(일부)층", "dg": "운중동", "m": 51.5, "d": "2024-09", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2025-00216", "n": "노모어피자 서판교점", "a": "운중로 135, 더원스퀘어 103,104호", "dg": "운중동", "m": 71.4, "d": "2025-06", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2020-00372", "n": "앙떡&부뚜막", "a": "운중로138번길 36, 1층 일부(103호)호", "dg": "운중동", "m": 33.5, "d": "2020-11", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2024-00422", "n": "마지 Marge", "a": "판교로25번길 8-6, 1(일부)층", "dg": "운중동", "m": 28.4, "d": "2024-09", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2016-00206", "n": "오페뜨 서판교운중점", "a": "운중로125번길 8, 1층", "dg": "운중동", "m": 100.5, "d": "2016-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2014-00241", "n": "오션문(OCEAN MOON)", "a": "운중로146번길 15-4", "dg": "운중동", "m": 105.8, "d": "2014-06", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2017-00044", "n": "현가츠", "a": "운중로146번길 11-4", "dg": "운중동", "m": 110.8, "d": "2017-02", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2024-00315", "n": "쿠키앤코[COOKIE & CO]", "a": "운중로125번길 4-7, 1층 일부(103)호", "dg": "운중동", "m": 27.4, "d": "2024-07", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2011-00224", "n": "스테이온(stayon)", "a": "운중로138번길 28-5", "dg": "운중동", "m": 128.7, "d": "2011-06", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2024-00259", "n": "카페964", "a": "운중로 131, 스타식스 메트로 1층 104호", "dg": "운중동", "m": 42.4, "d": "2024-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2017-00177", "n": "라마네의식주", "a": "산운로160번길 20-9", "dg": "운중동", "m": 28.1, "d": "2017-06", "s": "세계음식", "g": 0, "f": ""}, {"id": "3810000-101-2019-00016", "n": "맘스터치 서판교점", "a": "운중로 142, 판교메디칼타워 1층 일부호", "dg": "운중동", "m": 81.5, "d": "2019-01", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2009-00302", "n": "서판교굽네치킨", "a": "운중로178번길 1", "dg": "운중동", "m": 34.6, "d": "2009-10", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2010-00179", "n": "종가감자탕.명태조림", "a": "운중로138번길 28-6", "dg": "운중동", "m": 99.2, "d": "2010-05", "s": "탕류", "g": 0, "f": ""}, {"id": "3810000-101-2012-00194", "n": "세렌", "a": "운중로188번길 11", "dg": "운중동", "m": 124.5, "d": "2012-05", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2022-00060", "n": "모건앤선즈", "a": "산운로 158, 1층", "dg": "운중동", "m": 20.6, "d": "2022-02", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2017-00404", "n": "밀", "a": "운중로 118, 스타타워 1층 102호", "dg": "운중동", "m": 30.1, "d": "2017-12", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2025-00235", "n": "물만난 물고기", "a": "운중로113번길 4-5, 1층", "dg": "운중동", "m": 90.5, "d": "2025-06", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2011-00425", "n": "백청우칼국수서판교점", "a": "산운로160번길 16-7", "dg": "운중동", "m": 132.1, "d": "2011-11", "s": "면류", "g": 0, "f": ""}, {"id": "3810000-101-2017-00062", "n": "메즈클라(mezclar)", "a": "운중로146번길 35-1", "dg": "운중동", "m": 106.6, "d": "2017-03", "s": "세계음식", "g": 0, "f": ""}, {"id": "3810000-101-2024-00233", "n": "닙스(nibs)", "a": "산운로160번길 22, 1층 일부(105)호", "dg": "운중동", "m": 50.2, "d": "2024-05", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2018-00297", "n": "파머스마켓팥집", "a": "판교로25번길 18-3, 1(일부)층", "dg": "운중동", "m": 51.6, "d": "2018-10", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2021-00090", "n": "커스텀커피 서판교점", "a": "운중로125번길 6, 1층 일부(101호)호", "dg": "운중동", "m": 75.3, "d": "2021-03", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2017-00374", "n": "더블크림(Double cream)", "a": "운중로138번길 28-7, 1층 일부", "dg": "운중동", "m": 46.1, "d": "2017-12", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2020-00152", "n": "비발디(Vivaldi)", "a": "운중로 123, 204호", "dg": "운중동", "m": 89.4, "d": "2020-05", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2010-00027", "n": "네네치킨", "a": "판교로25번길 22-6", "dg": "운중동", "m": 28.5, "d": "2010-02", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2021-00342", "n": "푸라닭 분당서판교점", "a": "운중로 132, 큐브타워 1층 110,111호", "dg": "운중동", "m": 52.5, "d": "2021-08", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2024-00092", "n": "아프레(APPRET)", "a": "판교로25번길 18-4, 1층", "dg": "운중동", "m": 112.6, "d": "2024-03", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2012-00448", "n": "항아리보쌈 서판교점", "a": "운중로125번길 14-16", "dg": "운중동", "m": 126.1, "d": "2012-10", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2025-00472", "n": "아르포 ARPO", "a": "운중로146번길 15, 1층", "dg": "운중동", "m": 18.8, "d": "2025-10", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2026-00193", "n": "호돌이 다방", "a": "운중로146번길 19, 1층 일부", "dg": "운중동", "m": 0.0, "d": "2026-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2026-00177", "n": "청정상회", "a": "운중로126번길 8, 1층 일부", "dg": "운중동", "m": 0.0, "d": "2026-06", "s": "일식", "g": 0, "f": ""}, {"id": "3810000-101-2025-00137", "n": "두찜 판교운중점", "a": "운중로 140, 메트로골드 1층 104호", "dg": "운중동", "m": 37.6, "d": "2025-04", "s": "탕류", "g": 0, "f": ""}, {"id": "3810000-101-2010-00106", "n": "춘천명물닭갈비", "a": "운중로138번길 18-5", "dg": "운중동", "m": 61.1, "d": "2010-04", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2017-00309", "n": "홍짜장 운중점", "a": "운중로 135, 105호", "dg": "운중동", "m": 38.1, "d": "2017-09", "s": "중식", "g": 0, "f": ""}, {"id": "3810000-101-2011-00182", "n": "진궁", "a": "운중로125번길 3-5", "dg": "운중동", "m": 141.2, "d": "2011-06", "s": "중식", "g": 0, "f": ""}, {"id": "3810000-101-2021-00122", "n": "김밥이랑 강정이", "a": "운중로 140, 메트로골드 1층 101호,102호일부호", "dg": "운중동", "m": 65.8, "d": "2021-03", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-101-2018-00224", "n": "레이니몬(RanyMon)", "a": "운중로166번길 4-5, 1(일부)층", "dg": "운중동", "m": 57.8, "d": "2018-08", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2014-00414", "n": "서가네 의정부부대찌개", "a": "운중로 142", "dg": "운중동", "m": 34.7, "d": "2014-10", "s": "탕류", "g": 0, "f": ""}, {"id": "3810000-101-2016-00122", "n": "제로투나인", "a": "운중로146번길 19-3, 1층", "dg": "운중동", "m": 104.5, "d": "2016-04", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-101-2019-00195", "n": "안안(anan)", "a": "운중로138번길 28-4, 1층", "dg": "운중동", "m": 109.9, "d": "2019-06", "s": "세계음식", "g": 0, "f": ""}, {"id": "3810000-101-2021-00411", "n": "포레스트오늘숲 서판교점", "a": "운중로146번길 35, 1층 일부(101호)호", "dg": "운중동", "m": 59.0, "d": "2021-10", "s": "세계음식", "g": 0, "f": ""}, {"id": "3810000-101-2014-00402", "n": "바른치킨 서판교운중점", "a": "운중로 124, 110호", "dg": "운중동", "m": 34.9, "d": "2014-10", "s": "육류", "g": 0, "f": ""}, {"id": "3810000-101-2021-00256", "n": "장인설렁탕", "a": "운중로 131, 스타식스 메트로 1층 103호", "dg": "운중동", "m": 40.3, "d": "2021-06", "s": "탕류", "g": 0, "f": ""}, {"id": "3810000-101-2024-00150", "n": "헤이롤", "a": "운중로125번길 3-3, 1층 일부(104)호", "dg": "운중동", "m": 28.2, "d": "2024-04", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-101-2022-00029", "n": "우리할매떡볶이 판교운중점", "a": "운중로 115, 1층 104호", "dg": "운중동", "m": 32.8, "d": "2022-02", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-104-2011-00040", "n": "빈스빈스커피서판교점", "a": "운중로146번길 31", "dg": "운중동", "m": 142.8, "d": "2011-03", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2014-00143", "n": "피자스쿨(판교산운마을점)", "a": "운중로 128", "dg": "운중동", "m": 43.2, "d": "2014-07", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-104-2015-00146", "n": "스타벅스서판교점", "a": "운중로 132", "dg": "운중동", "m": 311.5, "d": "2015-07", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2016-00231", "n": "맥도날드 서판교DT점", "a": "운중로 190", "dg": "운중동", "m": 356.6, "d": "2016-09", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-104-2018-00115", "n": "써브웨이 서판교점", "a": "운중로 142, 판교메디칼타워 1(일부)층", "dg": "운중동", "m": 89.4, "d": "2018-06", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-104-2019-00214", "n": "새쟁이꽈배기", "a": "운중로 128, 1층 109호", "dg": "운중동", "m": 46.0, "d": "2019-10", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2019-00238", "n": "메가엠지씨커피 서판교점", "a": "운중로 115, 1층 105호", "dg": "운중동", "m": 42.3, "d": "2019-10", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2020-00100", "n": "파파젤라또", "a": "운중로 128, 1층 111호", "dg": "운중동", "m": 29.2, "d": "2020-05", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2021-00027", "n": "컴포즈커피 서판교점", "a": "운중로 128, 마크시티그린 1층 104호", "dg": "운중동", "m": 33.1, "d": "2021-02", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2021-00164", "n": "프랭크버거 서판교점", "a": "운중로 123, 마크시티오렌지 1층 104호", "dg": "운중동", "m": 36.4, "d": "2021-07", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-104-2021-00256", "n": "샐러디 서판교점", "a": "운중로 129, 1층 110호", "dg": "운중동", "m": 26.9, "d": "2021-11", "s": "양식", "g": 0, "f": ""}, {"id": "3810000-104-2022-00125", "n": "이삭토스트 성남서판교점", "a": "운중로 132, 1층 104호", "dg": "운중동", "m": 32.7, "d": "2022-05", "s": "밥류", "g": 0, "f": ""}, {"id": "3810000-104-2022-00136", "n": "아마스빈 서판교점", "a": "운중로 129, 1층 105호", "dg": "운중동", "m": 32.4, "d": "2022-05", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2022-00152", "n": "스크루지라이크스콘(SCROOGE LIKES SCONE)", "a": "산운로160번길 20-9, 1층 일부(102호의 일부)호", "dg": "운중동", "m": 28.1, "d": "2022-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2022-00158", "n": "아볼롱떼(A VOLONTE)", "a": "운중로 176, 트윈플라자-2 1층 109호", "dg": "운중동", "m": 19.5, "d": "2022-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2024-00071", "n": "배스킨라빈스 판교운중점", "a": "운중로 120, 청호델피노 1층 101호", "dg": "운중동", "m": 40.5, "d": "2024-02", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2024-00184", "n": "투썸플레이스 서판교운중시티", "a": "운중로 121, 1층 102호,103호,104호", "dg": "운중동", "m": 139.2, "d": "2024-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2024-00301", "n": "비스위트", "a": "판교로33번길 9, 1(일부)층", "dg": "운중동", "m": 22.4, "d": "2024-09", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2025-00171", "n": "공차 서판교점", "a": "운중로 128, 마크시티그린 106호", "dg": "운중동", "m": 33.8, "d": "2025-05", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2026-00053", "n": "텐퍼센트 서판교점", "a": "운중로 115, 1층 107호", "dg": "운중동", "m": 0.0, "d": "2026-02", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2026-00203", "n": "리얼케익 서판교점", "a": "운중로 128, 마크시티그린 110호", "dg": "운중동", "m": 0.0, "d": "2026-06", "s": "카페", "g": 0, "f": ""}, {"id": "3810000-104-2026-00299", "n": "우지커피 서판교점", "a": "운중로 132, 1층 105호", "dg": "운중동", "m": 0.0, "d": "2026-09", "s": "카페", "g": 0, "f": ""}];
+const STATIC = true;
+const STARS_BAKED = [];
+const CATS = [
+  {k:"육류",g:"한식"},{k:"탕류",g:"한식"},{k:"밥류",g:"한식"},{k:"면류",g:"한식"},
+  {k:"중식"},{k:"일식"},{k:"양식"},{k:"세계음식",label:"세계식"},{k:"카페"},{k:"기타",label:"분류 안 됨"}
+];
+const CATKEYS = CATS.map(c=>c.k);
+const DONGS = ["운중동"];
+const SORTS = {
+  old:(a,b)=>(a.r.d||"9999").localeCompare(b.r.d||"9999")||a.r.n.localeCompare(b.r.n,"ko"),
+  big:(a,b)=>b.r.m-a.r.m||a.r.n.localeCompare(b.r.n,"ko"),
+  name:(a,b)=>a.r.n.localeCompare(b.r.n,"ko")
+};
+const MIXED = {chain:["체인점","이름에 ‘~점’이 붙은 곳이에요"],fav:["즐겨찾기","별표를 눌러 둔 가게"],g:["모범음식점","시·구청이 지정한 곳"],hold:["보류함","아직 분류 안 한 가게예요. 눌러서 분류해 주세요."],trash:["삭제함","삭제한 가게예요. 복구할 수 있어요."]};
+const CATCOL = {"육류":["#ff6b5e","#ffe2de"],"탕류":["#ff9f1c","#ffecc9"],"밥류":["#52b85a","#dff4d9"],"면류":["#3fa7f5","#d9eeff"],
+  "중식":["#ec5f8f","#ffdfeb"],"일식":["#8b6cf0","#e9e2ff"],"양식":["#1fbfa0","#d3f4ec"],"세계음식":["#e8b100","#fff1c2"],"카페":["#b5764a","#f4e3d3"],"기타":["#7f8da0","#e8edf3"],
+  "fav":["#ffb400","#fff1c2"],"chain":["#6c8cff","#e1e8ff"],"g":["#1fbfa0","#d3f4ec"],"trash":["#7f8da0","#e8edf3"],"hold":["#b08968","#f3e6d9"]};
+function paint(el,k){ const c=CATCOL[k]||["#4a86f7","#e3edff"]; el.style.setProperty("--c",c[0]); el.style.setProperty("--t",c[1]); }
+const ICONS = {"카페": "<svg viewBox='0 0 64 64' aria-hidden='true'><path d='M20 19C16 16 24 13 20 8M30 19C26 16 34 13 30 8M40 19C36 16 44 13 40 8' stroke='#cdbfb2' stroke-width='2.6' stroke-linecap='round' fill='none'/><path d='M48 29c9-1 10 11 0 13' stroke='#c98f5b' stroke-width='4' stroke-linecap='round' fill='none'/><path d='M8 26h40v12c0 11-9 18-20 18S8 49 8 38z' fill='#c98f5b'/><ellipse cx='28' cy='26' rx='20' ry='6' fill='#f3d9b8'/><ellipse cx='28' cy='26.5' rx='17' ry='4.4' fill='#8b5a3c'/><circle cx='22' cy='41' r='2.1' fill='#4a3b32'/><circle cx='34' cy='41' r='2.1' fill='#4a3b32'/><path d='M25 45Q28 48.5 31 45' stroke='#4a3b32' stroke-width='1.9' stroke-linecap='round' fill='none'/><circle cx='17.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/><circle cx='38.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/></svg>", "chain": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M10 26h44v28H10z\" fill=\"#dfe7ff\"/><path d=\"M8 26l4-14h40l4 14z\" fill=\"#6c8cff\"/><path d=\"M8 26q4 6 8 0q4 6 8 0q4 6 8 0q4 6 8 0q4 6 8 0q4 6 8 0\" fill=\"#fff\" opacity=\".9\"/><rect x=\"26\" y=\"38\" width=\"12\" height=\"16\" rx=\"2\" fill=\"#9db3ff\"/><circle cx=\"20\" cy=\"40\" r=\"1.8\" fill=\"#4a3b32\"/><circle cx=\"44\" cy=\"40\" r=\"1.8\" fill=\"#4a3b32\"/><path d=\"M18 45q2 2 4 0M42 45q2 2 4 0\" stroke=\"#4a3b32\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/></svg>", "hold": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle cx=\"32\" cy=\"34\" r=\"22\" fill=\"#f3dcc2\"/><path d=\"M21 33q4 4 8 0M35 33q4 4 8 0\" stroke=\"#6b4a35\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"20\" cy=\"41\" rx=\"4\" ry=\"2.6\" fill=\"#f4a99a\"/><ellipse cx=\"44\" cy=\"41\" rx=\"4\" ry=\"2.6\" fill=\"#f4a99a\"/><path d=\"M29 44q3 3 6 0\" stroke=\"#6b4a35\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M44 10h9l-9 9h9\" stroke=\"#b08968\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "육류": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M9 30C8 17 20 8 33 8c12 0 23 7 23 19 0 6 3 9 2 15-1 9-12 15-26 15C16 57 10 46 9 30z\" fill=\"#c9503e\"/><path d=\"M14 30c0-10 8-17 19-17 10 0 18 5 18 14 0 6 2 8 1 13-1 7-9 11-21 11-10 0-17-9-17-21z\" fill=\"#e0675a\"/><path d=\"M15 25c4-6 10-9 17-9M47 26c1 4 1 8-1 12M20 48c5 4 12 5 19 3\" stroke=\"#f9c6bb\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"26\" cy=\"33\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"33\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 37Q32 40.5 35 37\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"37.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"37.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "탕류": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M22 24C17 21 27 18 22 13M32 21C27 18 37 15 32 9M42 24C37 21 47 18 42 13\" stroke=\"#cdbfb2\" stroke-width=\"2.6\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M8 31h48c0 14-10 25-24 25S8 45 8 31z\" fill=\"#f3b36b\"/><ellipse cx=\"32\" cy=\"31\" rx=\"24\" ry=\"7\" fill=\"#fde3b8\"/><ellipse cx=\"32\" cy=\"31.5\" rx=\"21\" ry=\"5.6\" fill=\"#e4673f\"/><path d=\"M17 31c3-2 6-2 9 0M30 33c3-2 6-2 9 0M38 30c2-1 5-1 7 0\" stroke=\"#f59a74\" stroke-width=\"1.6\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"26\" cy=\"45\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"45\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 49Q32 52.5 35 49\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"49.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"49.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "밥류": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M11 32c0-11 9-18 21-18s21 7 21 18z\" fill=\"#ffffff\" stroke=\"#ebe1d6\" stroke-width=\"2\"/><circle cx=\"24\" cy=\"24\" r=\"1.4\" fill=\"#e6dccf\"/><circle cx=\"33\" cy=\"20\" r=\"1.4\" fill=\"#e6dccf\"/><circle cx=\"41\" cy=\"26\" r=\"1.4\" fill=\"#e6dccf\"/><path d=\"M9 32h46c0 13-9 22-23 22S9 45 9 32z\" fill=\"#e8a56a\"/><circle cx=\"26\" cy=\"43\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"43\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 47Q32 50.5 35 47\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"47.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"47.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "면류": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M27 8V30M32 8V30M37 8V30M42 8V30\" stroke=\"#f2c14e\" stroke-width=\"2.8\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M58 2L24 12M60 8L26 18\" stroke=\"#b98a5e\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><path d=\"M8 31h48c0 14-10 25-24 25S8 45 8 31z\" fill=\"#5aa9ea\"/><ellipse cx=\"32\" cy=\"31\" rx=\"24\" ry=\"7\" fill=\"#d6ebfb\"/><ellipse cx=\"32\" cy=\"31.5\" rx=\"21\" ry=\"5.6\" fill=\"#ffe9a8\"/><path d=\"M15 31c2-2 4 2 6 0s4 2 6 0 4 2 6 0 4 2 6 0 4 2 6 0 4 2 6 0M18 34c2-1 4 1 6 0s4 1 6 0 4 1 6 0 4 1 6 0\" stroke=\"#f2c14e\" stroke-width=\"1.5\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"26\" cy=\"45\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"45\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 49Q32 52.5 35 49\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"49.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"49.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "중식": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M7 42c0-15 11-25 25-25s25 10 25 25c0 5-3 7-7 7H14c-4 0-7-2-7-7z\" fill=\"#fff6e6\" stroke=\"#ebdcc2\" stroke-width=\"2\"/><path d=\"M18 24q2 6 0 10M26 20q2 7 0 13M34 19q2 7 0 14M42 21q2 6 0 11\" stroke=\"#ebdcc2\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"26\" cy=\"41\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"41\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 45Q32 48.5 35 45\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"45.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"45.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "일식": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><rect x=\"9\" y=\"33\" width=\"46\" height=\"20\" rx=\"10\" fill=\"#ffffff\" stroke=\"#ebe1d6\" stroke-width=\"2\"/><path d=\"M7 36c0-11 11-18 25-18s25 7 25 18c0 3-4 5-8 3-5-3-10-1-17-1s-12-2-17 1c-4 2-8 0-8-3z\" fill=\"#f78e6f\"/><path d=\"M20 24l-3 8M30 21l-2 9M40 22l-1 9\" stroke=\"#ffd2c4\" stroke-width=\"2\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"26\" cy=\"46\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"46\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 50Q32 53.5 35 50\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"50.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"50.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "양식": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M9 29c0-12 10-19 23-19s23 7 23 19z\" fill=\"#f2b970\"/><ellipse cx=\"22\" cy=\"15\" rx=\"2.2\" ry=\"1.2\" fill=\"#fff4dc\" transform=\"rotate(-20 22 15)\"/><ellipse cx=\"43\" cy=\"14\" rx=\"2.2\" ry=\"1.2\" fill=\"#fff4dc\" transform=\"rotate(15 43 14)\"/><ellipse cx=\"32\" cy=\"12\" rx=\"2.2\" ry=\"1.2\" fill=\"#fff4dc\"/><path d=\"M7 31q6 5 12 0t12 0 12 0 12 0v3H7z\" fill=\"#93c978\"/><rect x=\"8\" y=\"35\" width=\"48\" height=\"8\" rx=\"4\" fill=\"#8b5c45\"/><path d=\"M9 45h46c0 6-4 9-9 9H18c-5 0-9-3-9-9z\" fill=\"#f2b970\"/><circle cx=\"26\" cy=\"22\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"22\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 26Q32 29.5 35 26\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"26.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"26.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "세계음식": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle cx=\"32\" cy=\"32\" r=\"25\" fill=\"#4fa3ea\"/><path d=\"M12 21c2-6 9-8 14-6 3 2 1 6-2 7-3 1-3 4-6 5-4 1-8-2-6-6zM39 15c4-2 10 0 12 4 1 3-2 5-5 4s-4 3-7 2-3-8 0-10zM45 41c3-2 7 0 7 4s-3 7-6 6-4-8-1-10zM17 43c3-2 6 0 6 3s-1 5-3 6-5-5-3-9z\" fill=\"#7ccf6e\"/><g stroke=\"#fff\" stroke-width=\"1.1\" opacity=\".5\" fill=\"none\"><ellipse cx=\"32\" cy=\"32\" rx=\"8\" ry=\"25\"/><ellipse cx=\"32\" cy=\"32\" rx=\"17\" ry=\"25\"/><path d=\"M32 7V57M7 32H57M10 21H54M10 43H54M16 12H48M16 52H48\"/></g><path d=\"M16 14c3-3 7-5 11-5\" stroke=\"#fff\" stroke-width=\"2.6\" stroke-linecap=\"round\" opacity=\".6\" fill=\"none\"/><circle cx=\"26\" cy=\"32\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"32\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 36Q32 39.5 35 36\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"36.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"36.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "기타": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle cx=\"32\" cy=\"40\" r=\"19\" fill=\"#ffffff\" stroke=\"#e5ddd3\" stroke-width=\"3\"/><circle cx=\"32\" cy=\"40\" r=\"12\" fill=\"#f6f1ea\"/><circle cx=\"26\" cy=\"40\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"40\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 44Q32 47.5 35 44\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"44.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"44.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><path d=\"M26 15q0-8 6-8t6 6q0 4-5 6v3\" stroke=\"#bcae9f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"33\" cy=\"26\" r=\"1.9\" fill=\"#bcae9f\"/></svg>", "fav": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M32 5l8.2 17.6 19.3 2.3-14.3 13.2 3.8 19L32 47.4 15 57.1l3.8-19L4.5 24.9l19.3-2.3z\" fill=\"#ffd45e\"/><circle cx=\"26\" cy=\"34\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"34\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 38Q32 41.5 35 38\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"38.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"38.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "g": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M15 40c-7-2-9-12-2-17 1-9 13-11 19-4 6-7 18-5 19 4 7 5 5 15-2 17v10H15z\" fill=\"#ffffff\" stroke=\"#e9dfd3\" stroke-width=\"2\"/><rect x=\"15\" y=\"46\" width=\"34\" height=\"4\" fill=\"#f1e6d9\"/><circle cx=\"26\" cy=\"33\" r=\"2.1\" fill=\"#4a3b32\"/><circle cx=\"38\" cy=\"33\" r=\"2.1\" fill=\"#4a3b32\"/><path d=\"M29 37Q32 40.5 35 37\" stroke=\"#4a3b32\" stroke-width=\"1.9\" stroke-linecap=\"round\" fill=\"none\"/><circle cx=\"21.5\" cy=\"37.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/><circle cx=\"42.5\" cy=\"37.5\" r=\"2.6\" fill=\"#ff8f7a\" opacity=\".55\"/></svg>", "trash": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6\"/></svg>"};
+const TRASH_SVG = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6\"/></svg>";
+function icon(k,size){ const s=h("span",{className:"ic"+(k==="trash"?" line":"")}); s.innerHTML=ICONS[k]||""; if(size) s.style.setProperty("--s",size+"px"); return s; }
+const SHOW_G=false; /* 모범음식점 표시는 숨김 (데이터는 그대로 있음). true로 바꾸면 다시 보임 */
+const S = {view:"home", key:null, dong:"all", sort:"name", kind:"all", open:null, q:""};
+const ov = new Map();
+const byId = new Map(DATA.map(r=>[r.id,r]));
+let dl = null, db = null, readOnly = false, readOnlyWhy = "";
+let pending=0, lastSaved=null, saveErr=false, ready=false;
+
+const $ = id => document.getElementById(id);
+function h(tag, props, ...kids){
+  const e=document.createElement(tag);
+  if(props) for(const k in props){ if(k==="className") e.className=props[k]; else if(k==="text") e.textContent=props[k]; else e.setAttribute(k,props[k]); }
+  kids.forEach(x=>{ if(x!=null) e.append(x); });
+  return e;
+}
+const CHAINRE=/점\)?\s*$/, NOTCHAIN=/(본점|반점|전문점|상점)\)?\s*$/;
+function chain0(r){ return r.c!==undefined ? !!r.c : (CHAINRE.test(r.n) && !NOTCHAIN.test(r.n)); }
+/* 링크(STATIC): 즐겨찾기 = 주인이 정한 기본 + 내가 더한 것 - 내가 뺀 것 (내 폰에만 저장). 편집 페이지: 주인이 ★로 기본 즐겨찾기를 정함(DB). */
+const REGION="unjung"; /* 지역 구분. 수지는 예전 저장 이름을 그대로 써서 기존 ★이 유지됨 */
+const FAVKEY=REGION==="suji"?"fh-fav2":"fh-fav2-"+REGION;
+function loadFavDelta(){ try{ const v=JSON.parse(localStorage.getItem(FAVKEY)||"{}"); return {add:Array.isArray(v.add)?v.add:[],rem:Array.isArray(v.rem)?v.rem:[]}; }catch(e){ return {add:[],rem:[]}; } }
+const FD=loadFavDelta(), DEFAULT_FAV=new Set(STARS_BAKED);
+function isFav(id){ return (DEFAULT_FAV.has(id)||FD.add.includes(id)) && !FD.rem.includes(id); }
+function toggleFav(id){
+  if(isFav(id)){ FD.add=FD.add.filter(x=>x!==id); if(DEFAULT_FAV.has(id) && !FD.rem.includes(id)) FD.rem.push(id); }
+  else { FD.rem=FD.rem.filter(x=>x!==id); if(!DEFAULT_FAV.has(id) && !FD.add.includes(id)) FD.add.push(id); }
+  try{ localStorage.setItem(FAVKEY,JSON.stringify(FD)); }catch(e){}
+  render();
+}
+function autoCat(n){
+  const t=(re)=>re.test(n);
+  if(t(/카페|커피|베이커리|디저트|케이크|제과/)) return "카페";
+  if(t(/마라|짬뽕|짜장|탕수육|중화|중국|딤섬|훠궈|양장피|마파/)) return "중식";
+  if(t(/초밥|스시|사시미|라멘|라면집|우동|소바|돈까스|돈카츠|카츠|돈부리|텐동|오마카세|일식|횟집|회센터|모밀|규동|가츠|이자카야/)) return "일식";
+  if(t(/닭갈비|닭|치킨|족발|보쌈|곱창|막창|삼겹|갈비|고기|구이|오리|한우|돼지|양꼬치|냉삼|소고기|육회|정육|숯불|화로|불백|항정|등심|꼬치|샤브/)) return "육류";
+  if(t(/버거|서브웨이|맘스터치|롯데리아|맥도날드|피자|파스타|스파게티|샌드위치|스테이크|브런치|리조또|양식|샐러드|노브랜드|그릴|비스트로|타파스/)) return "양식";
+  if(t(/쌀국수|베트남|태국|인도|커리|카레|멕시|타코|케밥|누들|반미|팟타이|중동|터키|브라질/)) return "세계음식";
+  if(t(/국밥|해장|설렁탕|설농탕|곰탕|순대|감자탕|추어|삼계탕|탕$|육개장|소머리|흑염소|동태탕|전골|매운탕|부대찌개/)) return "탕류";
+  if(t(/칼국수|국수|냉면|막국수|수제비|면옥|제면|밀면|면$|면가|짜글/)) return "면류";
+  if(t(/밥|솥|찌개|백반|정식|한정식|쌈밥|보리|집밥|청국장|순두부|곤드레|김밥|떡볶이|분식|만두|죽$|찜|낙지|쭈꾸미|아구|코다리|해물|장어|꼼장어|낙곱새/)) return "밥류";
+  return null;
+}
+function hold0(r,s){ return s==="기타" || !!r.hg; }
+function cur(r){ const o=ov.get(r.id); const s=(o&&CATKEYS.includes(o.s))?o.s:r.s; return {s, star:(STATIC?isFav(r.id):!!(o&&o.star)), x:!!(o&&o.x), h:r.hs?true:((o&&o.h!==undefined)?!!o.h:hold0(r,s)), c:(o&&o.c!==undefined)?!!o.c:chain0(r)}; }
+function label(k){ const c=CATS.find(x=>x.k===k); return c&&c.label?c.label:k; }
+function mapUrl(r){ return "https://map.naver.com/p/search/"+encodeURIComponent("운중동 "+r.n); }
+function allItems(){ return DATA.map(r=>{const c=cur(r);return {r,s:c.s,star:c.star,x:c.x,h:c.h,c:c.c};}); }
+function itemsFor(key,all){
+  if(key==="trash") return all.filter(i=>i.x);
+  if(key==="hold") return all.filter(i=>!i.x && i.h);
+  const v=all.filter(i=>!i.x && !i.h);
+  if(key==="fav") return all.filter(i=>!i.x && i.star);
+  if(key==="chain") return v.filter(i=>i.c);
+  if(key==="g") return v.filter(i=>i.r.g);
+  return v.filter(i=>i.s===key);
+}
+
+/* ---------- saving ---------- */
+function slimTop(){ const tp=document.querySelector(".top"); if(tp) tp.classList.toggle("slim", $("back").hidden && $("save").hidden); }
+function paintSave(){
+  const el=$("save"); let txt, cls="save";
+  if(!ready) txt="저장 연결 중…";
+  else if(readOnly){ txt="보기 전용 · 저장 안 됨"; cls+=" err"; }
+  else if(saveErr){ txt="저장 실패, 다시 해보세요"; cls+=" err"; }
+  else if(pending>0) txt="저장 중…";
+  else if(lastSaved) txt="✓ 저장됨 · "+lastSaved.toLocaleTimeString("ko-KR",{hour:"numeric",minute:"2-digit"});
+  else txt="✓ 바꾸면 바로 저장돼요";
+  el.className=cls; el.textContent=txt; el.hidden=!saveErr;
+  slimTop();
+}
+function setCat(id, next, verb){
+  const r=byId.get(id); const prev=cur(r);
+  next=Object.assign({},prev,next); next.h=!!next.h; if(prev.s===next.s && prev.star===next.star && prev.x===next.x && prev.h===next.h && prev.c===next.c) return;
+  commit(id,next,prev);
+  if(verb==="move") showToast("‘"+r.n+"’을(를) "+label(next.s)+"(으)로 옮겼어요", ()=>commit(id,prev,next));
+  else if(verb==="del") showToast("‘"+r.n+"’을(를) 삭제했어요. 삭제함에서 복구할 수 있어요.", ()=>commit(id,prev,next));
+  else if(verb==="hold") showToast("‘"+r.n+"’을(를) 보류함에 넣었어요", ()=>commit(id,prev,next));
+  else if(verb==="unhold") showToast("‘"+r.n+"’을(를) "+label(next.s)+"(으)로 옮겼어요", ()=>commit(id,prev,next));
+  else if(verb==="chain") showToast(next.c?"‘"+r.n+"’에 체인 표시를 했어요":"‘"+r.n+"’의 체인 표시를 뺐어요", ()=>commit(id,prev,next));
+  else if(verb==="restore") showToast("‘"+r.n+"’을(를) 복구했어요", ()=>commit(id,prev,next));
+}
+function payload(r,next){
+  const o={s:next.s,star:!!next.star,x:!!next.x,h:!!next.h,c:!!next.c};
+  if(r.manual) Object.assign(o,{manual:true,n:r.n,a:r.a||"",dg:r.dg,g:r.g?1:0});
+  return o;
+}
+function commit(id,next,prev){
+  const r=byId.get(id);
+  ov.set(id,{s:next.s,star:next.star,x:!!next.x,h:!!next.h,c:!!next.c});
+  render();
+  if(!db) return;
+  pending++; paintSave();
+  const p=(commit.chain.get(id)||Promise.resolve()).then(async()=>{
+    const ref=db.doc("edits/"+id);
+    if(!r.manual && next.s===r.s && !next.star && !next.x && !!next.h===hold0(r,next.s) && !!next.c===chain0(r)) await ref.delete(); else await ref.set(payload(r,next));
+    pending--; lastSaved=new Date(); saveErr=false; paintSave();
+  }).catch(e=>{
+    pending--; saveErr=true;
+    ov.set(id,{s:prev.s,star:prev.star,x:!!prev.x,h:!!prev.h,c:!!prev.c}); render();
+    if(e && e.code==="invalid_argument"){ readOnly=true; readOnlyWhy="이 계정은 편집 권한이 없어서 저장하지 못했어요. 페이지 주인에게 편집 권한을 받아야 해요."; render(); }
+    else showToast("저장하지 못했어요. 잠시 후 다시 해보세요.", null);
+  });
+  commit.chain.set(id,p);
+}
+commit.chain=new Map();
+
+/* ---------- rows ---------- */
+function row(it,o){
+  const r=it.r, lock=readOnly||!ready, isOpen=(S.open===r.id);
+  const star=h("button",{className:"star",type:"button","aria-pressed":String(it.star),"aria-label":r.n+" 즐겨찾기",text:"★"});
+  star.disabled=STATIC?false:lock;
+  star.addEventListener("click",()=>{ if(STATIC) toggleFav(r.id); else setCat(r.id,{s:it.s,star:!it.star,x:it.x,h:it.h},"star"); });
+  const nm=h("div",{className:"nm"}); nm.append(r.n);
+  if(SHOW_G && r.g) nm.append(h("span",{className:"badge",text:"모범"}));
+  if(it.c) nm.append(h("span",{className:"badge chain",text:"체인"}));
+  if(o.tag){ const held=!STATIC&&it.h; const tg=h("span",{className:"tag",text:held?"보류함":((STATIC&&it.s==="기타")?"기타":label(it.s))}); paint(tg,held?"hold":it.s); nm.append(tg); }
+  const info=h("div",{className:"info"},nm,h("div",{className:"meta",text:r.a}));
+  if(r.d) info.append(h("div",{className:"meta",text:(r.m>0?Math.round(r.m)+"㎡ · ":"")+r.d.slice(0,4)+"년 허가"}));
+  else if(!STATIC) info.append(h("div",{className:"meta",text:"직접 추가한 가게"}));
+  if(SHOW_G && r.g && r.f) info.append(h("div",{className:"menu",text:"주메뉴 "+r.f}));
+  const map=h("a",{className:"map",href:mapUrl(r),target:"_blank",rel:"noopener","aria-label":r.n+" 지도에서 보기",text:"지도"});
+  const ctl=h("div",{className:"ctl"},map);
+  const el=h("div",{className:"item browse"+(isOpen?" open":"")},star,info,ctl);
+  if(readOnly) return el;
+  info.classList.add("tap"); info.setAttribute("role","button"); info.tabIndex=0; info.setAttribute("aria-expanded",String(isOpen));
+  const toggle=()=>{ S.open=isOpen?null:r.id; render(); };
+  info.addEventListener("click",toggle);
+  info.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } });
+  if(!isOpen) return el;
+  const p=h("div",{className:"panel"});
+  if(it.x){
+    const rb=h("button",{className:"pbtn main",type:"button",text:"복구"}); rb.disabled=lock;
+    rb.addEventListener("click",()=>setCat(r.id,{s:it.s,star:it.star,x:false,h:it.h},"restore"));
+    p.append(rb);
+  } else {
+    const sel=h("select",{className:"cat"+(it.s==="기타"?" isTodo":""),"aria-label":r.n+" 분류"});
+    if(it.h || it.s==="기타") sel.append(h("option",{value:"",text:"분류 고르기"}));
+    const og=h("optgroup",{label:"한식"});
+    CATS.filter(c=>c.g==="한식").forEach(c=>og.append(h("option",{value:c.k,text:c.k})));
+    sel.append(og);
+    CATS.filter(c=>!c.g && c.k!=="기타").forEach(c=>sel.append(h("option",{value:c.k,text:c.label||c.k})));
+    if(!it.h && it.s==="기타") sel.value=""; else if(it.s!=="기타") sel.value=it.s; else sel.value="";
+    sel.disabled=lock; paint(sel,it.s);
+    sel.addEventListener("change",()=>{ if(!sel.value) return; setCat(r.id,{s:sel.value,star:it.star,x:false,h:false},it.h?"unhold":"move"); });
+    const hb=h("button",{className:"pbtn",type:"button",text:it.h?(it.s==="기타"?"분류 없이 올리기":"‘"+label(it.s)+"’"+(/류$/.test(label(it.s))?"로":"으로")+" 올리기"):"보류함으로"}); hb.disabled=lock;
+    hb.addEventListener("click",()=>setCat(r.id,{s:it.s,star:it.star,x:false,h:!it.h},it.h?"restore":"hold"));
+    const delBtn=h("button",{className:"pbtn del",type:"button","aria-label":r.n+" 삭제",text:"삭제"}); delBtn.disabled=lock;
+    let armed=false, armTimer=null;
+    delBtn.addEventListener("click",()=>{
+      if(!armed){
+        armed=true; delBtn.textContent="삭제할까요?"; delBtn.classList.add("armed");
+        armTimer=setTimeout(()=>{ armed=false; delBtn.textContent="삭제"; delBtn.classList.remove("armed"); },3000);
+        return;
+      }
+      clearTimeout(armTimer); setCat(r.id,{s:it.s,star:it.star,x:true,h:it.h},"del");
+    });
+    const cb=h("button",{className:"pbtn",type:"button",text:it.c?"체인 해제":"체인 표시"}); cb.disabled=lock;
+    cb.addEventListener("click",()=>setCat(r.id,{c:!it.c},"chain"));
+    p.append(h("span",{className:"selw"},sel)); if(!(it.h && it.s==="기타")) p.append(hb); p.append(cb,delBtn);
+  }
+  el.append(p);
+  return el;
+}
+const HOLDOPEN=new Set();
+function groupsHold(items,o){
+  const frag=document.createDocumentFragment();
+  [-2,-3,-1].forEach(y=>{
+    const g=items.filter(i=>(i.r.hg===2?-1:(i.r.hg===1?-3:-2))===y); if(!g.length) return;
+    const open=HOLDOPEN.has(y);
+    const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon("hold",30),h("span",{className:"scl",text:y===-2?"분류 대기":(y===-3?"범위 밖":"요리주점")}),h("span",{className:"scn",text:g.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
+    cap.addEventListener("click",()=>{ if(HOLDOPEN.has(y)) HOLDOPEN.delete(y); else HOLDOPEN.add(y); render(); });
+    frag.append(cap);
+    if(open){ const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o))); frag.append(card); }
+  });
+  return frag;
+}
+const FOLDOPEN=new Set();
+function foldCard(id,iconKey,label,items,o){
+  const frag=document.createDocumentFragment();
+  const open=FOLDOPEN.has(id);
+  const cap=h("button",{className:"sc yrcard",type:"button","aria-expanded":String(open)},icon(iconKey,30),h("span",{className:"scl",text:label}),h("span",{className:"scn",text:items.length+"곳 · "+(open?"눌러서 접기":"눌러서 펼치기")}));
+  cap.addEventListener("click",()=>{ if(FOLDOPEN.has(id)) FOLDOPEN.delete(id); else FOLDOPEN.add(id); render(); });
+  frag.append(cap);
+  if(open){ const card=h("div",{className:"card"}); items.forEach(i=>card.append(row(i,o))); frag.append(card); }
+  return frag;
+}
+function groups(items,o){
+  const frag=document.createDocumentFragment();
+  const dgs=[...DONGS, ...new Set(items.map(i=>i.r.dg).filter(d=>!DONGS.includes(d)))];
+  dgs.forEach(d=>{
+    const g=items.filter(i=>i.r.dg===d); if(!g.length) return;
+    if(o.fold){ frag.append(foldCard((S.key||"")+"|"+d,o.icon||"hold",d,g,o)); return; }
+    const cap=h("div",{className:"cap"},h("b",{text:d}),h("span",{text:g.length+"곳"}));
+    const card=h("div",{className:"card"}); g.forEach(i=>card.append(row(i,o)));
+    frag.append(cap,card);
+  });
+  return frag;
+}
+
+/* ---------- screens ---------- */
+function renderHome(all){
+  const vis=all.filter(i=>!i.x && !i.h);
+  $("sub").textContent="고민하는 당신에게";
+  const body=$("homebody"); const frag=document.createDocumentFragment();
+  const norm=x=>String(x||"").toLowerCase().replace(/\s+/g,"");
+  const toks=S.q.toLowerCase().split(/\s+/).filter(Boolean);
+  if(toks.length){
+    const pool=all.filter(i=>!i.x && (!STATIC || !i.h || i.star));
+    const hits=pool.filter(i=>{ const hay=norm(i.r.n+" "+i.r.a+" "+i.r.dg+" "+i.r.f+" "+label(i.s)); return toks.every(w=>hay.includes(w)); }).sort(SORTS.name);
+    frag.append(h("p",{className:"lab",text:hits.length?("검색 결과 "+hits.length+"곳"):""}));
+    if(!hits.length) frag.append(h("p",{className:"empty",text:"찾는 가게가 없어요. 다른 이름이나 동네로 검색해 보세요."}));
+    else frag.append(groups(hits,{tag:true}));
+    body.replaceChildren(frag); return;
+  }
+  const count=k=>vis.filter(i=>i.s===k).length;
+  const card=k=>{
+    const b=h("button",{className:"cc",type:"button"},icon(k,100),h("span",{className:"cn",text:label(k)}),h("span",{className:"cm",text:count(k)+"곳"}));
+    paint(b,k); b.addEventListener("click",()=>go("list",k)); return b;
+  };
+  frag.append(h("p",{className:"lab",text:"한식"}));
+  const g1=h("div",{className:"grid"}); ["육류","탕류","밥류","면류"].forEach(k=>g1.append(card(k))); frag.append(g1);
+  frag.append(h("p",{className:"lab",text:"이외"}));
+  const g2=h("div",{className:"grid"}); ["중식","일식","양식","세계음식","카페"].forEach(k=>g2.append(card(k))); frag.append(g2);
+  frag.append(h("p",{className:"lab",text:"바로가기"}));
+  const g3=h("div",{className:"grid"});
+  
+  const holdN=all.filter(i=>!i.x && i.h).length;
+  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",all.filter(i=>!i.x && i.star).length],["chain","체인점",vis.filter(i=>i.c).length],["hold","보류함",holdN]].filter(x=>(SHOW_G||x[0]!=="g") && (x[0]!=="fav"||x[2]>0) && (!STATIC||x[0]!=="hold")).forEach(([k,t2,n])=>{
+    const b=h("button",{className:"sc",type:"button"},icon(k,56),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
+    paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
+  });
+  frag.append(g3);
+  if(!STATIC && dl){
+    const bk=h("button",{className:"backup",type:"button",text:"내 컴퓨터에 백업"});
+    bk.addEventListener("click",async()=>{
+      const out={}; ov.forEach((v,k)=>{ const o={s:v.s,star:!!v.star,x:!!v.x}; if(v.h!==undefined) o.h=!!v.h; out[k]=o; });
+      const d=new Date(), ymd=d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");
+      try{ await dl.save({filename:"food-hunter-edits-"+ymd+".json",data:JSON.stringify(out,null,1)}); showToast("백업 파일을 저장했어요 ("+Object.keys(out).length+"건)",null); }
+      catch(e){ if(!e||e.code!=="declined") showToast("백업하지 못했어요. 잠시 후 다시 해보세요.",null); }
+    });
+    frag.append(h("div",{className:"backupw"},bk));
+  }
+  body.replaceChildren(frag);
+}
+
+function renderList(all){
+  const key=S.key;
+  let base=itemsFor(key,all);
+  const mixed=!!MIXED[key];
+  const title=mixed?MIXED[key][0]:label(key);
+  const c=CATS.find(x=>x.k===key);
+  $("lt").textContent=title;
+  paint($("listview"),key);
+  $("lic").replaceChildren(icon(key,52));
+  const ksel=$("kindsel");
+  const kopts=[["all","모든 가게"]]; if(SHOW_G && key!=="g") kopts.push(["g","모범만"]); if(key!=="chain") kopts.push(["c","체인만"]);
+  if(!kopts.some(o=>o[0]===S.kind)) S.kind="all";
+  ksel.replaceChildren(...kopts.map(o=>h("option",{value:o[0],text:o[1]}))); ksel.value=S.kind; ksel.parentNode.hidden=(key==="trash");
+  $("sortsel").value=S.sort;
+  if(S.kind==="g") base=base.filter(i=>i.r.g); else if(S.kind==="c") base=base.filter(i=>i.c);
+  const dsel=$("dongsel");
+  dsel.replaceChildren(h("option",{value:"all",text:"모든 동네"}), ...DONGS.map(d=>h("option",{value:d,text:d+" "+base.filter(i=>i.r.dg===d).length})));
+  dsel.value=S.dong;
+  const shown=base.filter(i=>S.dong==="all"||i.r.dg===S.dong).sort(SORTS[S.sort]);
+  $("ls").textContent=shown.length+"곳"+(mixed?(" · "+MIXED[key][1]):(c&&c.g?" · "+c.g:""));
+  $("pickbtn2").hidden=(key==="hold"||key==="trash"); fillListPick(key,title);
+  $("banner").hidden=true;
+  const canAdd=!STATIC && key==="hold" && !readOnly && ready;
+  $("addbtn").hidden=!canAdd || S.adding; $("addform").hidden=!(canAdd && S.adding);
+  const nt=$("notice"); nt.textContent=readOnly?(readOnlyWhy||(STATIC?"":"보기 전용이에요.")):""; nt.hidden=!(readOnly && nt.textContent);
+  const frag=document.createDocumentFragment();
+  if(!shown.length) frag.append(h("p",{className:"empty",text:key==="trash"?"삭제한 가게가 없어요.":key==="hold"?"보류한 가게가 없어요.":key==="fav"?"별표를 누른 가게가 아직 없어요.":"조건에 맞는 가게가 없어요."}));
+  else {
+    const favs=(key==="fav"||key==="trash"||key==="hold")?[]:shown.filter(i=>i.star);
+    const rest=shown.filter(i=>!favs.includes(i));
+    const ngroups=(favs.length?1:0)+new Set(rest.map(i=>i.r.dg)).size;
+    const fold=ngroups>1 && key!=="hold";
+    const icn=ICONS[key]?key:"hold";
+    if(favs.length){
+      if(fold) frag.append(foldCard(key+"|fav","fav","★ 즐겨찾기",favs,{tag:mixed}));
+      else {
+        frag.append(h("div",{className:"cap"},h("b",{text:"★ 즐겨찾기"}),h("span",{text:favs.length+"곳"})));
+        const fc=h("div",{className:"card"}); favs.forEach(i=>fc.append(row(i,{tag:mixed}))); frag.append(fc);
+      }
+    }
+    frag.append((key==="hold"?groupsHold:groups)(rest,{tag:mixed,fold,icon:icn}));
+  }
+  if(key==="hold"){
+    const tn=all.filter(i=>i.x).length;
+    const tb=h("button",{className:"sc trashlink",type:"button"},icon("trash",30),h("span",{className:"scl",text:"삭제함"}),h("span",{className:"scn",text:tn+"곳"}));
+    tb.addEventListener("click",()=>go("list","trash")); frag.append(tb);
+  }
+  $("listbody").replaceChildren(frag);
+}
+
+function paintTop(tc){
+  $("back").hidden=S.view!=="list"; slimTop();
+  const tb=$("trashbtn");
+  tb.hidden=true;
+  $("trashn").textContent=tc>0?tc:"";
+}
+function render(){
+  const y=window.scrollY;
+  const all=allItems();
+  paintTop(all.filter(i=>i.x).length);
+  if(S.view==="home") renderHome(all); else renderList(all);
+  paintSave();
+  if(window.scrollY!==y) window.scrollTo(0,y);
+}
+function go(view,key){
+  S.view=view; S.key=key||null; S.dong="all"; S.kind="all"; S.open=null; FOLDOPEN.clear();
+  $("home").hidden=view!=="home"; $("listview").hidden=view!=="list";
+  render(); window.scrollTo(0,0);
+}
+
+/* ---------- pick ---------- */
+const dice=()=>h("span",{className:"dice","aria-hidden":"true",text:"🎲"});
+function fillHomePick(){
+  const b=$("pickhome"); const row=h("div",{className:"pb-chars","aria-hidden":"true"});
+  ["육류","탕류","밥류","면류","중식","일식","양식","세계음식","카페"].forEach((k,i)=>{ const s=h("span",{className:"pb-ch"}); s.style.setProperty("--d",(i*0.12)+"s"); s.append(icon(k,30)); row.append(s); });
+  b.replaceChildren(row,h("div",{className:"pb-main"},"랜덤뽑기"));
+}
+function fillListPick(key,title){
+  const b=$("pickbtn2"); if(b.dataset.key===key && b.firstChild) return; b.dataset.key=key;
+  const row=h("div",{className:"pb-chars one","aria-hidden":"true"}); const s=h("span",{className:"pb-ch"}); s.append(icon(key,30)); row.append(s);
+  b.replaceChildren(row,h("div",{className:"pb-main"},"랜덤뽑기"));
+}
+let pickTimer=null, pickLast=null;
+function stopPick(){ clearTimeout(pickTimer); pickTimer=null; }
+function pickFrom(pool){
+  const ov$=$("pickov"), body=$("pickbody");
+  stopPick();
+  if(!pool.length){ showToast("뽑을 가게가 없어요", null); return; }
+  let fin=pool[Math.floor(Math.random()*pool.length)];
+  if(pool.length>1) while(pickLast && fin.r.id===pickLast) fin=pool[Math.floor(Math.random()*pool.length)];
+  pickLast=fin.r.id;
+  const quick=window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const icoBox=h("div",{className:"pk-ico"}), nameEl=h("div",{className:"pk-name"}), hint=h("div",{className:"pk-hint",text:"두구두구…"});
+  const chars=h("div",{className:"pk-chars","aria-hidden":"true"});
+  ["육류","탕류","밥류","면류","중식","일식","양식","세계음식","카페"].forEach(k=>{ const s=h("span",{className:"pk-ch"}); s.dataset.k=k; s.append(icon(k,34)); chars.append(s); });
+  const light=k=>chars.querySelectorAll(".pk-ch").forEach(s=>s.classList.toggle("on",s.dataset.k===k));
+  const showItem=(it,cls)=>{ icoBox.replaceChildren(icon(it.s,56)); nameEl.textContent=it.r.n; nameEl.className="pk-name"+(cls?" "+cls:""); void nameEl.offsetWidth; light(it.s); };
+  const close=h("button",{className:"pk-close",type:"button",text:"닫기"});
+  close.addEventListener("click",()=>{ stopPick(); ov$.hidden=true; });
+  const reveal=()=>{
+    const r=fin.r, it=fin;
+    showItem(it,"pop"); hint.remove(); chars.remove();
+    const tg=h("div",{className:"pk-tags"});
+    const t1=h("span",{className:"tag",text:label(it.s)}); paint(t1,it.s); tg.append(t1);
+    if(SHOW_G && r.g) tg.append(h("span",{className:"badge",text:"모범"}));
+    if(it.c) tg.append(h("span",{className:"badge chain",text:"체인"}));
+    if(it.star) tg.append(h("span",{className:"badge",text:"★ 즐겨찾기"}));
+    const again=h("button",{className:"pk-again",type:"button",text:"🎲 다시 뽑기"});
+    again.addEventListener("click",()=>pickFrom(pool));
+    const more=h("div",{className:"pk-more"},tg,
+      h("div",{className:"pk-meta",text:r.dg+" · "+r.a}),
+      h("div",{className:"pk-meta",text:(r.d?(r.m>0?Math.round(r.m)+"㎡ · ":"")+r.d.slice(0,4)+"년 허가":"직접 추가한 가게")+((SHOW_G&&r.g&&r.f)?" · 주메뉴 "+r.f:"")}),
+      h("div",{className:"pk-act"},h("a",{className:"pk-map",href:mapUrl(r),target:"_blank",rel:"noopener",text:"지도 보기"}),again));
+    body.replaceChildren(h("div",{className:"pk-top"},icoBox,nameEl),more,close);
+  };
+  body.replaceChildren(h("div",{className:"pk-top"},icoBox,nameEl),hint,chars,close);
+  ov$.hidden=false;
+  if(quick||pool.length<2){ reveal(); return; }
+  let delay=50, elapsed=0, prev=null;
+  const step=()=>{
+    if(delay>=620){ reveal(); return; }
+    let it=pool[Math.floor(Math.random()*pool.length)];
+    if(it.r.id===prev) it=pool[(pool.indexOf(it)+1)%pool.length];
+    prev=it.r.id; showItem(it,"tick");
+    elapsed+=delay; delay=Math.round(delay*1.17);
+    pickTimer=setTimeout(step,delay);
+  };
+  step();
+}
+$("pickov").addEventListener("click",e=>{ if(e.target===$("pickov")){ stopPick(); $("pickov").hidden=true; } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ stopPick(); $("pickov").hidden=true; } });
+fillHomePick();
+$("pickhome").addEventListener("click",()=>pickFrom(allItems().filter(i=>!i.x&&!i.h)));
+$("pickbtn2").addEventListener("click",()=>{
+  const key=S.key; let base=itemsFor(key,allItems());
+  if(S.kind==="g") base=base.filter(i=>i.r.g); else if(S.kind==="c") base=base.filter(i=>i.c);
+  base=base.filter(i=>S.dong==="all"||i.r.dg===S.dong); if(key==="hold"||key==="trash") base=[];
+  pickFrom(base);
+});
+
+/* ---------- toast ---------- */
+let toastTimer=null, undoFn=null;
+function showToast(msg, undo){
+  $("toastmsg").textContent=msg; undoFn=undo; $("undo").hidden=!undo; $("toast").hidden=false;
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>{$("toast").hidden=true;},6500);
+}
+$("undo").addEventListener("click",()=>{ const f=undoFn; $("toast").hidden=true; undoFn=null; if(f) f(); });
+
+/* ---------- wiring ---------- */
+$("trashic").innerHTML=TRASH_SVG;
+$("trashbtn").addEventListener("click",()=>go("list","trash"));
+$("back").addEventListener("click",()=>{ if(S.view==="list" && S.key==="trash") go("list","hold"); else go("home"); });
+
+$("dongsel").addEventListener("change",e=>{ S.dong=e.target.value; render(); });
+$("sortsel").addEventListener("change",e=>{ S.sort=e.target.value; render(); });
+$("kindsel").addEventListener("change",e=>{ S.kind=e.target.value; render(); });
+$("ag").parentNode.hidden=!SHOW_G;
+$("adg").replaceChildren(h("option",{value:"",text:"동네 고르기"}),...DONGS.map(d=>h("option",{value:d,text:d})));
+$("asel").replaceChildren(h("option",{value:"",text:"자동 분류"}),...CATS.filter(c=>c.k!=="기타").map(c=>h("option",{value:c.k,text:c.label||c.k})),h("option",{value:"기타",text:"보류함에 넣기"}));
+$("asel").value="";
+$("addbtn").addEventListener("click",()=>{ S.adding=true; render(); setTimeout(()=>$("an").focus(),50); });
+$("acancel").addEventListener("click",()=>{ S.adding=false; render(); });
+$("addform").addEventListener("submit",e=>{
+  e.preventDefault();
+  const n=$("an").value.trim(), dg=$("adg").value, a=$("aa").value.trim(), g=$("ag").checked;
+  let sc=$("asel").value, auto=false;
+  if(!sc){ auto=true; sc=autoCat(n)||"기타"; }
+  if(!n){ showToast("가게 이름을 적어 주세요.",null); $("an").focus(); return; }
+  if(!dg){ showToast("동네를 골라 주세요.",null); return; }
+  const id="m-"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const nr={id,n,a,dg,m:0,d:"",s:sc,g:g?1:0,f:"",manual:1};
+  DATA.push(nr); byId.set(id,nr);
+  const next={s:sc,star:$("astar").checked,x:false,h:sc==="기타",c:chain0(nr)};
+  ov.set(id,next);
+  $("an").value=""; $("aa").value=""; $("ag").checked=false; $("astar").checked=false;
+  render();
+  const where=sc==="기타"?(auto?"자동 분류가 안 돼서 보류함에":"보류함에"):(auto?label(sc)+"(으)로 자동 분류해서":label(sc)+"에");
+  showToast("‘"+n+"’을(를) "+where+" 추가했어요", ()=>commit(id,Object.assign({},next,{x:true}),next));
+  if(!db) return;
+  pending++; paintSave();
+  db.doc("edits/"+id).set(payload(nr,next)).then(()=>{ pending--; lastSaved=new Date(); saveErr=false; paintSave(); }).catch(()=>{
+    pending--; saveErr=true; ov.set(id,Object.assign({},next,{x:true})); render(); showToast("저장하지 못했어요. 잠시 후 다시 해보세요.",null);
+  });
+});
+$("q").addEventListener("input",e=>{ S.q=e.target.value; render(); });
+(function(){ const d=new Date(); $("eyebrow").hidden=true; paint($("home"),"x"); })();
+render();
+
+(async()=>{
+  if(STATIC){ readOnly=true; readOnlyWhy=""; ready=true; render(); return; }
+  try{
+    if(!(window.claude && window.claude.use)){ readOnly=true; readOnlyWhy="미리보기 화면이라 편집은 저장되지 않아요."; return; }
+    const user=await window.claude.use("user");
+    const can = user ? await user.can("data.write") : null;
+    try{ dl=await window.claude.use("downloads"); }catch(e){ dl=null; }
+    db=await window.claude.use("db");
+    if(!db){ readOnly=true; readOnlyWhy="로그인한 화면에서 열면 분류를 고치고 저장할 수 있어요."; return; }
+    if(can===false){ readOnly=true; readOnlyWhy="보기 전용이에요. 편집 권한을 받으면 분류를 바꿀 수 있어요."; }
+    db.collection("edits").onSnapshot(snap=>{
+      ov.clear();
+      snap.docs.forEach(d=>{ const v=d.data()||{}; if(v.manual && !byId.has(d.id) && v.n && DONGS.includes(v.dg)){ const nr={id:d.id,n:String(v.n),a:String(v.a||""),dg:v.dg,m:0,d:"",s:CATKEYS.includes(v.s)?v.s:"기타",g:v.g?1:0,f:"",manual:1}; DATA.push(nr); byId.set(nr.id,nr); } if(byId.has(d.id)) ov.set(d.id,{s:v.s,star:!!v.star,x:!!v.x,h:(v.h===undefined?undefined:!!v.h),c:(v.c===undefined?undefined:!!v.c)}); });
+      render();
+    },()=>{ showToast("저장된 분류를 불러오지 못했어요.", null); });
+  }catch(e){ /* page still works read-only */ }
+  finally{ ready=true; render(); }
+})();
+</script>
+
+<div class="wrap" style="padding-block:0"><p class="ver">오늘 뭐먹지 v6.11 · 운중동</p></div>
+</body>
+</html>
