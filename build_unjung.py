@@ -61,6 +61,8 @@ PATCHES=[
  ('(r.d?Math.round(r.m)+"㎡ · "+r.d.slice(0,4)+"년 허가":','(r.d?(r.m>0?Math.round(r.m)+"㎡ · ":"")+r.d.slice(0,4)+"년 허가":',1),
  # 직접 추가할 때 이름에 카페/커피 등이 있으면 카페로 자동 분류
  ('const t=(re)=>re.test(n);','const t=(re)=>re.test(n);\n  if(t(/베이커리|빵|브레드|제과|케이크|디저트|쿠키|스콘|도넛|꽈배기|젤라또|마카롱/)) return "베이커리";\n  if(t(/카페|커피/)) return "카페";',1),
+ # 즐겨찾기가 없어도 0곳으로 보여줌
+ ('(x[0]!=="fav"||x[2]>0)','true',1),
  ('</style>',EXTRA_CSS+'</style>',1),
 ]
 for old,new,cnt in PATCHES:

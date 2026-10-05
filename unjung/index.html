@@ -520,7 +520,7 @@ function renderHome(all){
   const g3=h("div",{className:"grid"});
   
   const holdN=all.filter(i=>!i.x && i.h).length;
-  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",all.filter(i=>!i.x && i.star).length],["chain","체인점",vis.filter(i=>i.c).length],["hold","보류함",holdN]].filter(x=>(SHOW_G||x[0]!=="g") && (x[0]!=="fav"||x[2]>0) && (!STATIC||x[0]!=="hold")).forEach(([k,t2,n])=>{
+  [["g","모범음식점",vis.filter(i=>i.r.g).length],["fav","즐겨찾기",all.filter(i=>!i.x && i.star).length],["chain","체인점",vis.filter(i=>i.c).length],["hold","보류함",holdN]].filter(x=>(SHOW_G||x[0]!=="g") && true && (!STATIC||x[0]!=="hold")).forEach(([k,t2,n])=>{
     const b=h("button",{className:"sc",type:"button"},icon(k,56),h("span",{className:"scl",text:t2}),h("span",{className:"scn",text:n+"곳"}));
     paint(b,k); b.addEventListener("click",()=>go("list",k)); g3.append(b);
   });
