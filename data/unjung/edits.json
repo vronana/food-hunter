@@ -66,7 +66,7 @@
   "c": false,
   "h": false,
   "s": "밥류",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-101-2010-00467": {
@@ -87,7 +87,7 @@
   "c": false,
   "h": false,
   "s": "중식",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-101-2014-00450": {
@@ -185,14 +185,14 @@
   "c": true,
   "h": false,
   "s": "카페",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-101-2021-00411": {
   "c": true,
   "h": false,
   "s": "세계음식",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-101-2023-00164": {
@@ -213,21 +213,21 @@
   "c": false,
   "h": false,
   "s": "면류",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-101-2023-00527": {
   "c": true,
   "h": false,
   "s": "밥류",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-101-2023-00529": {
   "c": true,
   "h": false,
   "s": "밥류",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-101-2024-00150": {
@@ -318,14 +318,14 @@
   "c": true,
   "h": false,
   "s": "양식",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-104-2022-00136": {
   "c": true,
   "h": false,
   "s": "카페",
-  "star": true,
+  "star": false,
   "x": false
  },
  "3810000-104-2024-00242": {
@@ -353,7 +353,7 @@
   "c": true,
   "h": false,
   "s": "카페",
-  "star": true,
+  "star": false,
   "x": false
  },
  "m-muv678yr3gs": {
