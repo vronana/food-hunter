@@ -24,14 +24,13 @@ CAFE_ICON=("<svg viewBox='0 0 64 64' aria-hidden='true'>"
  "<circle cx='17.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/><circle cx='38.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/>"
  "</svg>")
 
-BREAD_ICON=("<svg viewBox='0 0 64 64' aria-hidden='true'>"
- "<path d='M10 34c0-12 10-20 22-20s22 8 22 20c0 3-2 5-5 5H15c-3 0-5-2-5-5z' fill='#e0a458'/>"
- "<path d='M12 38h40v8c0 5-4 8-9 8H21c-5 0-9-3-9-8z' fill='#c9893a'/>"
- "<path d='M24 20l4 8M34 18l3 9M44 22l2 7' stroke='#f6dcae' stroke-width='3' stroke-linecap='round' fill='none'/>"
- "<circle cx='25' cy='42' r='2.1' fill='#4a3b32'/><circle cx='39' cy='42' r='2.1' fill='#4a3b32'/>"
- "<path d='M29 46Q32 49.5 35 46' stroke='#4a3b32' stroke-width='1.9' stroke-linecap='round' fill='none'/>"
- "<circle cx='20' cy='46' r='2.6' fill='#ff8f7a' opacity='.55'/><circle cx='44' cy='46' r='2.6' fill='#ff8f7a' opacity='.55'/>"
- "</svg>")
+BREAD_ICON=("<svg viewBox='0 0 64 64' aria-hidden='true'><g transform='translate(0 5)'>"
+ "<path d='M6 38c0-15 11-25 26-25s26 10 26 25c0 4-3 6-6 6H12c-3 0-6-2-6-6z' fill='#e0a458'/>"
+ "<path d='M22 20l4 8M33 17l3 9M44 21l2 8' stroke='#f6dcae' stroke-width='3' stroke-linecap='round' fill='none'/>"
+ "<circle cx='23' cy='36' r='2.3' fill='#4a3b32'/><circle cx='41' cy='36' r='2.3' fill='#4a3b32'/>"
+ "<path d='M28 40Q32 44 36 40' stroke='#4a3b32' stroke-width='2' stroke-linecap='round' fill='none'/>"
+ "<circle cx='17' cy='40' r='2.8' fill='#ff8f7a' opacity='.55'/><circle cx='47' cy='40' r='2.8' fill='#ff8f7a' opacity='.55'/>"
+ "</g></svg>")
 
 EXTRA_CSS="""/* 운중동 전용 */
 .pills .selw:first-child{display:none}
