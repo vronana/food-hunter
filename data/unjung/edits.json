@@ -1,0 +1,371 @@
+{
+ "3810000-101-2001-00034": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "3810000-101-2001-00126": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "3810000-101-2001-00435": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2001-01641": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "3810000-101-2007-00346": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2008-00141": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2010-00159": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2010-00338": {
+  "c": true,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2010-00349": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2010-00363": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
+ "3810000-101-2010-00467": {
+  "c": true,
+  "h": false,
+  "s": "일식",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2011-00147": {
+  "c": false,
+  "h": false,
+  "s": "면류",
+  "star": false,
+  "x": true
+ },
+ "3810000-101-2011-00182": {
+  "c": false,
+  "h": false,
+  "s": "중식",
+  "star": true,
+  "x": false
+ },
+ "3810000-101-2014-00450": {
+  "c": false,
+  "h": false,
+  "s": "일식",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2015-00091": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2015-00240": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2015-00294": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2015-00447": {
+  "c": false,
+  "h": false,
+  "s": "육류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2015-00487": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2015-00542": {
+  "c": false,
+  "h": false,
+  "s": "카페",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2016-00065": {
+  "c": true,
+  "h": false,
+  "s": "육류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2017-00281": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2017-00352": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2018-00293": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2019-00119": {
+  "c": false,
+  "h": false,
+  "s": "베이커리",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2020-00281": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2021-00090": {
+  "c": true,
+  "h": false,
+  "s": "카페",
+  "star": true,
+  "x": false
+ },
+ "3810000-101-2021-00411": {
+  "c": true,
+  "h": false,
+  "s": "세계음식",
+  "star": true,
+  "x": false
+ },
+ "3810000-101-2023-00164": {
+  "c": false,
+  "h": false,
+  "s": "일식",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2023-00211": {
+  "c": false,
+  "h": false,
+  "s": "카페",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2023-00526": {
+  "c": false,
+  "h": false,
+  "s": "면류",
+  "star": true,
+  "x": false
+ },
+ "3810000-101-2023-00527": {
+  "c": true,
+  "h": false,
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
+ "3810000-101-2023-00529": {
+  "c": true,
+  "h": false,
+  "s": "밥류",
+  "star": true,
+  "x": false
+ },
+ "3810000-101-2024-00150": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2024-00253": {
+  "c": true,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "3810000-101-2025-00194": {
+  "c": false,
+  "h": false,
+  "s": "베이커리",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2025-00220": {
+  "c": false,
+  "h": false,
+  "s": "카페",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2025-00293": {
+  "c": true,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2025-00346": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2025-00443": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "3810000-101-2026-00034": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "3810000-101-2026-00085": {
+  "c": false,
+  "h": false,
+  "s": "밥류",
+  "star": false,
+  "x": false
+ },
+ "3810000-101-2026-00217": {
+  "c": false,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-104-2015-00299": {
+  "c": false,
+  "h": false,
+  "s": "카페",
+  "star": false,
+  "x": false
+ },
+ "3810000-104-2017-00174": {
+  "c": false,
+  "h": true,
+  "s": "기타",
+  "star": false,
+  "x": true
+ },
+ "3810000-104-2021-00164": {
+  "c": true,
+  "h": false,
+  "s": "양식",
+  "star": true,
+  "x": false
+ },
+ "3810000-104-2022-00136": {
+  "c": true,
+  "h": false,
+  "s": "카페",
+  "star": true,
+  "x": false
+ },
+ "3810000-104-2024-00242": {
+  "c": false,
+  "h": false,
+  "s": "베이커리",
+  "star": false,
+  "x": false
+ },
+ "3810000-104-2024-00372": {
+  "c": true,
+  "h": false,
+  "s": "카페",
+  "star": false,
+  "x": false
+ },
+ "3810000-104-2024-00406": {
+  "c": true,
+  "h": false,
+  "s": "탕류",
+  "star": false,
+  "x": false
+ },
+ "3810000-104-2026-00053": {
+  "c": true,
+  "h": false,
+  "s": "카페",
+  "star": true,
+  "x": false
+ },
+ "m-muv678yr3gs": {
+  "a": "",
+  "c": false,
+  "dg": "운중동",
+  "g": 0,
+  "h": false,
+  "manual": true,
+  "n": "식껍",
+  "s": "육류",
+  "star": false,
+  "x": false
+ }
+}
