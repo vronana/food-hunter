@@ -4,7 +4,7 @@
 - 영업 중인 운중동 가게만 (연차·면적 제한 없음)
 - 술집·편의점·푸드트럭·PC방은 뺌
 - 카페(커피·차)와 베이커리(빵·디저트)는 따로.
-- 보류함: 이름으로 분류 못 한 곳(기타), 요리주점, 지도 범위 밖(hg=1). hg=2 는 요리주점.
+- 보류함: 이름으로 분류 못 한 곳(기타), 요리주점, (지도 범위 밖은 데이터에서 뺌). hg=2 는 요리주점.
 """
 import sys,re,json,os,collections
 import pandas as pd
@@ -91,7 +91,7 @@ def main(gen,rest,out):
         row=dict(id=str(r['관리번호']),n=str(r['사업장명']),a=a,dg='운중동',m=m,d=(dt.strftime('%Y-%m') if pd.notna(dt) else ''),
                  s=('기타' if k=='요리주점' else k),g=0,f='')
         if k=='요리주점': row['hg']=2
-        elif k!='기타' and not inside: row['hg']=1
+        elif k!='기타' and not inside: continue          # 지도 범위 밖은 데이터에서 뺌
         rows.append(row)
     ids=[r['id'] for r in rows]; assert len(ids)==len(set(ids)),'id 중복'
     os.makedirs(os.path.dirname(out),exist_ok=True)
