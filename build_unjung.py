@@ -16,9 +16,9 @@ src=open(f'{here}/src/app.html').read()
 
 CAFE_ICON=("<svg viewBox='0 0 64 64' aria-hidden='true'>"
  "<path d='M20 19C16 16 24 13 20 8M30 19C26 16 34 13 30 8M40 19C36 16 44 13 40 8' stroke='#cdbfb2' stroke-width='2.6' stroke-linecap='round' fill='none'/>"
- "<path d='M48 29c9-1 10 11 0 13' stroke='#c98f5b' stroke-width='4' stroke-linecap='round' fill='none'/>"
- "<path d='M8 26h40v12c0 11-9 18-20 18S8 49 8 38z' fill='#c98f5b'/>"
- "<ellipse cx='28' cy='26' rx='20' ry='6' fill='#f3d9b8'/><ellipse cx='28' cy='26.5' rx='17' ry='4.4' fill='#8b5a3c'/>"
+ "<path d='M48 29c9-1 10 11 0 13' stroke='#7fb8c4' stroke-width='4' stroke-linecap='round' fill='none'/>"
+ "<path d='M8 26h40v12c0 11-9 18-20 18S8 49 8 38z' fill='#7fb8c4'/>"
+ "<ellipse cx='28' cy='26' rx='20' ry='6' fill='#e4f3f6'/><ellipse cx='28' cy='26.5' rx='17' ry='4.4' fill='#8b5a3c'/>"
  "<circle cx='22' cy='41' r='2.1' fill='#4a3b32'/><circle cx='34' cy='41' r='2.1' fill='#4a3b32'/>"
  "<path d='M25 45Q28 48.5 31 45' stroke='#4a3b32' stroke-width='1.9' stroke-linecap='round' fill='none'/>"
  "<circle cx='17.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/><circle cx='38.5' cy='45.5' r='2.6' fill='#ff8f7a' opacity='.55'/>"
